@@ -13,7 +13,6 @@ datasource db {
 model Product {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   name       String?
-  priceWithDiscount Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   shortName  String
@@ -26,7 +25,7 @@ model Product {
 model ProductPriceHistory {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   price Int
-  priceWithDiscount Int?
+  priceWithDiscount Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   productId String? @db.ObjectId
