@@ -3,7 +3,6 @@
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -93,6 +92,10 @@ export const ProductForm = () => {
       description: 'Choose date when product was purchased',
     }
   ];
+
+  if (mutation.isSuccess) {
+    form.reset();
+  }
 
   if (mutation.isLoading) {
     return <div>Performing request</div>
