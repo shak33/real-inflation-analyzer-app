@@ -1,11 +1,17 @@
 "use client";
 
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+
+import * as locales from 'react-date-range/dist/locale';
+import { Calendar } from 'react-date-range';
 
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -26,6 +32,7 @@ const formSchema = z.object({
   }),
   priceWithDiscount: z.boolean().default(false),
   barcode: z.string(),
+  date: z.date(),
 });
 
 export const ProductForm = () => {
@@ -37,6 +44,7 @@ export const ProductForm = () => {
       price: 0,
       priceWithDiscount: false,
       barcode: '',
+      date: new Date(),
     }
   });
   const mutation = useMutation((postData: Product) => {
@@ -78,6 +86,12 @@ export const ProductForm = () => {
       type: 'switch',
       description: '',
     },
+    {
+      name: 'date',
+      label: 'Date',
+      type: 'calendar',
+      description: 'Choose date when product was purchased',
+    }
   ];
 
   if (mutation.isLoading) {
@@ -113,6 +127,30 @@ export const ProductForm = () => {
                 </FormItem>
               )}
             />
+          }
+
+          if (type === 'calendar') {
+            return <FormField
+            control={form.control}
+            key={`${name}-${index}`}
+            name={name as keyof Product}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{label}</FormLabel>
+                <FormControl>
+                  <Calendar
+                    date={field.value}
+                    onChange={field.onChange}
+                    locale={locales['pl']}
+                  />
+                </FormControl>
+                <FormDescription>
+                  {description}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           }
 
           return <FormField

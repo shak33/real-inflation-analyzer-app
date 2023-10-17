@@ -8,6 +8,7 @@ export interface ProductsTableProduct {
   shortName: string;
   name: string;
   barcode: string;
+  date: string;
   priceHistory: PriceHistory[]
   priceWithDiscount: number;
 }

@@ -32,13 +32,14 @@ export const ProductsTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {products.data.map((product: ProductsTableProduct) => (
-          <TableRow key={product.id}>
-            <TableCell>{product.shortName}</TableCell>
-            <TableCell>{product.name}</TableCell>
-            <TableCell>{product.barcode}</TableCell>
-            <TableCell>{product.priceHistory.at(-1)?.price}</TableCell>
-            <TableCell>{product.priceWithDiscount}</TableCell>
+        {products.data.map(({id, shortName, name, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => (
+          <TableRow key={id}>
+            <TableCell>{shortName}</TableCell>
+            <TableCell>{name}</TableCell>
+            <TableCell>{barcode}</TableCell>
+            <TableCell>{date}</TableCell>
+            <TableCell>{priceHistory.at(-1)?.price}</TableCell>
+            <TableCell>{priceWithDiscount}</TableCell>
             <TableCell className="flex justify-around">
               <Button>
                 Edit
