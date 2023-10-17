@@ -4,28 +4,19 @@ import prisma from "@/libs/prismadb";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { shortName, name, price, priceWithDiscount, barcode } = body;
+  const { name, logo } = body;
 
   try {
-    const product = await prisma.product.create({
+    await prisma.company.create({
       data: {
-        shortName,
         name,
-        barcode,
-      },
-    });
-
-    await prisma.productPriceHistory.create({
-      data: {
-        productId: product.id,
-        price,
-        priceWithDiscount,
+        logo,
       },
     });
 
     return NextResponse.json({
       status: 200,
-      message: "Product created successfully",
+      message: "Company created successfully",
     });
   } catch (error: any) {
     return NextResponse.json({

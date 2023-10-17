@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   Table,
@@ -11,7 +13,7 @@ import { Button } from "@/components/ui/button";
 
 import { useCompanies } from "@/hooks/useCompanies";
 
-import { CompaniesTableCompany } from "@/interfaces/CompaniesTableCompany4";
+import { CompaniesTableCompany } from "@/interfaces/CompaniesTableCompany";
 
 export const CompaniesTable = () => {
   const companies = useCompanies();
