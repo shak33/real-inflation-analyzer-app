@@ -28,8 +28,8 @@ model ProductPriceHistory {
   priceWithDiscount Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  productId String? @db.ObjectId
-  product Product? @relation(fields: [productId], references: [id])
+  productId String @db.ObjectId
+  product Product @relation(fields: [productId], references: [id])
   receiptImage String?
 }
 

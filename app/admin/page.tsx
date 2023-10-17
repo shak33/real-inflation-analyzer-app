@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+
+import { useProducts } from '@/hooks/useProducts';
 
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -35,6 +37,7 @@ const formSchema = z.object({
 });
 
 export default function AdminPage() {
+  const products = useProducts();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,14 +48,12 @@ export default function AdminPage() {
       barcode: '',
     }
   });
-  const mutation = useMutation((postData: Product) => axios.post('/api/products', postData));
+  const mutation = useMutation((postData: Product) => {
+    return axios.post('/api/admin/products', postData);
+  });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-  }
-
-  if (mutation.isLoading) {
-    return <div>Performing request</div>
+    mutation.mutate(values);
   }
 
   const formStructure = [
@@ -65,6 +66,12 @@ export default function AdminPage() {
     {
       name: 'name',
       label: 'Name',
+      type: 'input',
+      description: '',
+    },
+    {
+      name: 'barcode',
+      label: 'Barcode',
       type: 'input',
       description: '',
     },
@@ -82,9 +89,16 @@ export default function AdminPage() {
     },
   ];
 
+  if (mutation.isLoading) {
+    return <div>Performing request</div>
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-col gap-4 w-full"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         {formStructure.map(({name, label, type, description}, index) => {
           if (type === 'switch') {
             return <FormField
@@ -92,9 +106,7 @@ export default function AdminPage() {
               key={`${name}-${index}`}
               name={name as keyof Product}
               render={({ field }) => (
-                <FormItem
-                  className="flex align-center"
-                >
+                <FormItem>
                   <FormLabel>{label}</FormLabel>
                   <FormControl>
                     <Switch
@@ -120,7 +132,7 @@ export default function AdminPage() {
               <FormItem>
                 <FormLabel>{label}</FormLabel>
                 <FormControl>
-                  <Input placeholder="test" {...field} />
+                  <Input placeholder="" {...field} />
                 </FormControl>
                 <FormDescription>
                   {description}
