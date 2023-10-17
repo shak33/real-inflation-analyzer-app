@@ -1,5 +1,8 @@
 "use client";
 
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,20 +10,15 @@ import * as z from 'zod';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 
-import { useProducts } from '@/hooks/useProducts';
+import * as locales from 'react-date-range/dist/locale';
+import { Calendar } from 'react-date-range';
 
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
-interface Product {
-  name: string;
-  shortName: string;
-  price: number;
-  priceWithDiscount: boolean;
-  barcode: string;
-}
+import { Product } from '@/interfaces/Product';
 
 const formSchema = z.object({
   shortName: z.string().min(3, {
@@ -34,10 +32,10 @@ const formSchema = z.object({
   }),
   priceWithDiscount: z.boolean().default(false),
   barcode: z.string(),
+  date: z.date(),
 });
 
-export default function AdminPage() {
-  const products = useProducts();
+export const ProductForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,6 +44,7 @@ export default function AdminPage() {
       price: 0,
       priceWithDiscount: false,
       barcode: '',
+      date: new Date(),
     }
   });
   const mutation = useMutation((postData: Product) => {
@@ -87,6 +86,12 @@ export default function AdminPage() {
       type: 'switch',
       description: '',
     },
+    {
+      name: 'date',
+      label: 'Date',
+      type: 'calendar',
+      description: 'Choose date when product was purchased',
+    }
   ];
 
   if (mutation.isLoading) {
@@ -122,6 +127,30 @@ export default function AdminPage() {
                 </FormItem>
               )}
             />
+          }
+
+          if (type === 'calendar') {
+            return <FormField
+            control={form.control}
+            key={`${name}-${index}`}
+            name={name as keyof Product}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{label}</FormLabel>
+                <FormControl>
+                  <Calendar
+                    date={field.value}
+                    onChange={field.onChange}
+                    locale={locales['pl']}
+                  />
+                </FormControl>
+                <FormDescription>
+                  {description}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           }
 
           return <FormField

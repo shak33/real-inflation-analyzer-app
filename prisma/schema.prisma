@@ -26,6 +26,7 @@ model ProductPriceHistory {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   price Int
   priceWithDiscount Boolean @default(false)
+  date DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   productId String @db.ObjectId
