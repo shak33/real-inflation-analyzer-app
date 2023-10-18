@@ -22,7 +22,6 @@ export const Navbar:React.FC<NavbarProps> = ({
 }) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
-  console.log(currentUser);
 
   return (
     <div className="flex justify-between items-center h-full py-3 px-8 border-b-[2px]">

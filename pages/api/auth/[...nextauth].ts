@@ -35,8 +35,6 @@ export const authOptions: AuthOptions = {
           }
         });
 
-        console.log(user);
-
         if (!user || !user?.password) {
           throw new Error('Invalid credentials');
         }
