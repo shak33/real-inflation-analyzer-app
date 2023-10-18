@@ -38,7 +38,9 @@ export const CompaniesTable = () => {
             <TableCell>
               <Image
                 alt={`Logo of ${name}`}
-                src={logo}
+                src={logo || ''}
+                width={150}
+                height={50}
               />
             </TableCell>
             <TableCell className="flex justify-around">
