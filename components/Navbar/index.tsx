@@ -6,8 +6,12 @@ import Link from "next/link";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { useLoginModal } from "@/hooks/useLoginModal";
 
-import { Button } from "../ui/button";
 import { User } from "@prisma/client";
+
+import { AiOutlineMenu } from 'react-icons/ai';
+
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 interface NavbarProps {
   currentUser: User | null;
@@ -52,7 +56,15 @@ export const Navbar:React.FC<NavbarProps> = ({
               </Button>
             </li>
           </div>
-          : null}
+          : <div className="p-4 md:py-1 md:px-3 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition">
+            <AiOutlineMenu />
+            <Avatar>
+              <AvatarImage
+                src={currentUser?.image || '/user-no-image.jpg'}
+                alt="User avatar"
+              />
+            </Avatar>
+          </div>}
       </ul>
     </div>
   )
