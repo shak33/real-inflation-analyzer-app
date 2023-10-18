@@ -23,7 +23,11 @@ import { User } from '@/interfaces/User';
 
 const formSchema = z.object({
   email: z.string().email(),
-  name: z.string(),
+  username: z.string().min(3, {
+    message: 'Username must be at least 3 characters long'
+  }).max(255, {
+    message: 'Username must be at most 255 characters long',
+  }),
   password: z.string(),
 });
 
@@ -34,7 +38,7 @@ export const RegisterModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      name: "",
+      username: "",
       password: "",
     },
   });
@@ -103,7 +107,11 @@ export const RegisterModal = () => {
                   <FormItem>
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
-                      <Input placeholder="" {...field} />
+                      <Input
+                        placeholder=""
+                        {...field}
+                        type={type}
+                      />
                     </FormControl>
                     <FormDescription>{description}</FormDescription>
                     <FormMessage />

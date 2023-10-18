@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { useRegisterModal } from '@/hooks/useRegisterModal';
 import { useLoginModal } from '@/hooks/useLoginModal';
 
-const LoginModal = () => {
+export const LoginModal = () => {
   const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
@@ -139,5 +139,3 @@ const LoginModal = () => {
     />
   )
 }
-
-export default LoginModal;
