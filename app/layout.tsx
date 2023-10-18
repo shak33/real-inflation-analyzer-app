@@ -9,6 +9,7 @@ import ReactQueryProvider from '../providers/ReactQueryProvider';
 import { Navbar } from '@/components/Navbar';
 
 import { RegisterModal } from '@/components/modals/RegisterModal';
+import LoginModal from '@/components/modals/LoginModal';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -29,6 +30,7 @@ export default function RootLayout({
             {children}
           </div>
           <RegisterModal />
+          <LoginModal />
         </body>
       </html>
     </ReactQueryProvider>

@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useCallback, useState } from 'react';
+
+import {FieldValues, SubmitHandler, useForm} from 'react-hook-form';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
@@ -16,77 +15,60 @@ import Heading from "@/components/Heading";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useRegisterModal } from "@/hooks/useRegisterModal";
-import { useLoginModal } from "@/hooks/useLoginModal";
+import { useRegisterModal } from '@/hooks/useRegisterModal';
+import { useLoginModal } from '@/hooks/useLoginModal';
 
-import { User } from '@/interfaces/User';
-
-const formSchema = z.object({
-  email: z.string().email(),
-  name: z.string(),
-  password: z.string(),
-});
-
-export const RegisterModal = () => {
+const LoginModal = () => {
+  const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+
+  const form = useForm<FieldValues>({
     defaultValues: {
-      email: "",
-      name: "",
-      password: "",
-    },
+      email: '',
+      password: '',
+    }
   });
 
-  const mutation = useMutation((postData: any) => {
-    return axios.post("/api/auth/register", postData).then((response) => {
-      form.reset();
-    });
-  });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutation.mutate(values);
+  const onSubmit: SubmitHandler<FieldValues>  = (data) => {
+    signIn('credentials', {
+      ...data,
+      redirect: false,
+    }).then((callback) => {
+      if (callback?.ok) {
+        router.refresh();
+        loginModal.closeModal();
+      }
+    })
   };
 
-  const toggleRegisterModal = () => {
-    registerModal.closeModal();
-    loginModal.openModal();
+  const toggleLoginModal = () => {
+    loginModal.closeModal();
+    registerModal.openModal();
   };
 
   const formStructure = [
     {
-      name: "username",
-      label: "Username",
-      type: "input",
-      description: "",
-      placeholder: "John Doe"
+      name: 'email',
+      label: 'Email',
+      type: 'input',
+      description: '',
+      placeholder: '',
     },
     {
-      name: "email",
-      label: "Email",
-      type: "input",
-      description: "",
-      placeholder: "johndoe@gmail.com"
+      name: 'password',
+      label: 'Password',
+      type: 'password',
+      description: '',
+      placeholder: '',
     },
-    {
-      name: "password",
-      label: "Password",
-      type: "password",
-      description: "",
-    },
-    {
-      name: "repeatedPassword",
-      label: "Repeat password",
-      type: "password",
-      description: "",
-    },
-  ]
+  ];
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
-        title="Welcome to Real Inflation Checker"
-        subtitle="Create an account!"
+        title="Welcome back"
+        subtitle="Login to your account!"
       />
       <Form {...form}>
         <form
@@ -112,7 +94,7 @@ export const RegisterModal = () => {
               />
             );
           })}
-          <Button type="submit">Create an account!</Button>
+          <Button type="submit">Continue</Button>
         </form>
       </Form>
     </div>
@@ -134,13 +116,13 @@ export const RegisterModal = () => {
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="justify-center flex flex-row items-center gap-2">
           <div>
-            Already have an account?
+            First time using Airbnb?
           </div>
           <div
             className="text-netural-800 cursor-pointer hover:underline"
-            onClick={toggleRegisterModal}
+            onClick={toggleLoginModal}
           >
-            Log in
+            Create an account
           </div>
         </div>
       </div>
@@ -149,12 +131,13 @@ export const RegisterModal = () => {
 
   return (
     <Modal
-      disabled={false}
-      isOpen={registerModal.isOpen}
-      title="Register"
-      onClose={registerModal.closeModal}
+      isOpen={loginModal.isOpen}
+      title="Login"
+      onClose={loginModal.closeModal}
       body={bodyContent}
       footer={footerContent}
     />
   )
 }
+
+export default LoginModal;
