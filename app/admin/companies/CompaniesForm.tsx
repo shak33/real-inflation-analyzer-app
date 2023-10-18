@@ -30,7 +30,9 @@ export const CompaniesForm = () => {
     }
   });
   const mutation = useMutation((postData: Company) => {
-    return axios.post('/api/admin/companies', postData);
+    return axios.post('/api/admin/companies', postData).then((response) => {
+      form.reset();
+    });
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -50,10 +52,6 @@ export const CompaniesForm = () => {
     },
   ]
 
-  if (mutation.isSuccess) {
-    form.reset();
-  }
-
   if (mutation.isLoading) {
     return <p>Performing request</p>
   }
@@ -62,7 +60,8 @@ export const CompaniesForm = () => {
     <Form {...form}>
       <form
         className="flex flex-col gap-4 w-full"
-        >
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
           {formStructure.map(({name, label, type}, index) => {
             return <FormField
               control={form.control}

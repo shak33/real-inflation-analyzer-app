@@ -13,6 +13,7 @@ export async function getProducts({
         },
         include: {
           priceHistory: true,
+          company: true,
         }
       });
 
@@ -22,6 +23,7 @@ export async function getProducts({
     const products = await prisma.product.findMany({
       include: {
         priceHistory: true,
+        company: true,
       },
     });
 
