@@ -20,6 +20,8 @@ model Product {
   companyId String? @db.ObjectId
   company    Company? @relation(fields: [companyId], references: [id])
   priceHistory ProductPriceHistory[]
+  createdById String? @db.ObjectId
+  user User? @relation(fields: [createdById], references: [id])
 }
 
 model ProductPriceHistory {
@@ -42,4 +44,26 @@ model Company {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
+  createdById String? @db.ObjectId
+  user User? @relation(fields: [createdById], references: [id])
+}
+
+enum Role {
+  GUEST
+  USER
+  ADMIN
+}
+
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String?
+  email String?
+  emailVerified String?
+  image String?
+  hashedPassword String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role Role @default(USER)
+  productsAdded Product[]
+  companiesAdded Company[]
 }
