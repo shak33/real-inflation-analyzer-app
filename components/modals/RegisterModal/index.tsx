@@ -11,19 +11,12 @@ import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 
 import { Button } from "@/components/ui/button";
-
 import Modal from "@/components/modals/Modal";
 import Heading from "@/components/Heading";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
+import { useRegisterModal } from "@/hooks/useRegisterModal";
 
 import { User } from '@/interfaces/User';
 
@@ -34,6 +27,7 @@ const formSchema = z.object({
 });
 
 export const RegisterModal = () => {
+  const registerModal = useRegisterModal();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -85,32 +79,32 @@ export const RegisterModal = () => {
         subtitle="Create an account!"
       />
       <Form {...form}>
-      <form
-        className="flex flex-col gap-4 w-full"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        {formStructure.map(({ name, label, type, description }, index) => {
-          return (
-            <FormField
-              control={form.control}
-              key={`${name}-${index}`}
-              name={name as keyof User}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field} />
-                  </FormControl>
-                  <FormDescription>{description}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        })}
-        <Button type="submit">Create an account!</Button>
-      </form>
-    </Form>
+        <form
+          className="flex flex-col gap-4 w-full"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          {formStructure.map(({ name, label, type, description }, index) => {
+            return (
+              <FormField
+                control={form.control}
+                key={`${name}-${index}`}
+                name={name as keyof User}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{label}</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field} />
+                    </FormControl>
+                    <FormDescription>{description}</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            );
+          })}
+          <Button type="submit">Create an account!</Button>
+        </form>
+      </Form>
     </div>
   );
 
@@ -145,9 +139,9 @@ export const RegisterModal = () => {
   return (
     <Modal
       disabled={false}
-      isOpen={true}
+      isOpen={registerModal.isOpen}
       title="Register"
-      onClose={() => false}
+      onClose={registerModal.closeModal}
       body={bodyContent}
       footer={footerContent}
     />
