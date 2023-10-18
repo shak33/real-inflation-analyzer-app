@@ -5,6 +5,7 @@ import { Company } from '@prisma/client';
 
 import { useCompanies } from '@/hooks/useCompanies';
 
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,11 +14,15 @@ export const RenderProperInput: React.FC<{type: string, field: any}> = ({type, f
   const companies = useCompanies();
 
   if (type === 'switch') {
-    return <Switch
-      className="mt-0"
-      checked={field.value}
-      onChange={field.onChange}
-    />
+    return <div className="flex items-center space-x-2">
+      <Switch
+        id="price-with-discount"
+        className="mt-0"
+        checked={field.value}
+        onChange={field.onChange}
+      />
+      <Label htmlFor="price-with-discount"></Label>
+    </div>
   } else if (type === 'calendar') {
      return <Calendar
       date={field.value}

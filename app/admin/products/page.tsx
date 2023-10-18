@@ -1,7 +1,7 @@
 "use client";
 
-import { ProductsTable } from './ProductsTable';
-import { ProductForm } from './ProductForm';
+import { ProductsTable } from "./ProductsTable";
+import { ProductForm } from "./ProductForm";
 
 export default function ProductsPage() {
   return (
@@ -10,5 +10,5 @@ export default function ProductsPage() {
       <ProductForm />
       <ProductsTable />
     </>
-  )
-} 
+  );
+}
