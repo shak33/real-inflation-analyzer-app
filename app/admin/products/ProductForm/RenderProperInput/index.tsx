@@ -10,7 +10,14 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export const RenderProperInput: React.FC<{type: string, field: any}> = ({type, field}) => {
+interface RenderProperInputProps {
+  type: string;
+  field: any;
+}
+
+export const RenderProperInput: React.FC<RenderProperInputProps> = ({
+  type, field
+}) => {
   const companies = useCompanies();
 
   if (type === 'switch') {

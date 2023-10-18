@@ -21,7 +21,7 @@ import {
 
 import { Product } from "@/interfaces/Product";
 
-import { RenderProperInput } from "../RenderProperInput";
+import { RenderProperInput } from "./RenderProperInput";
 
 const formSchema = z.object({
   shortName: z
@@ -131,7 +131,6 @@ export const ProductForm = () => {
                   <FormLabel>{label}</FormLabel>
                   <FormControl>
                     <RenderProperInput
-                      description={description}
                       field={field}
                       type={type}
                     />
