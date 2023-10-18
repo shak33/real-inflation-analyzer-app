@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { ImageUpload } from '@/components/ImageUpload';
 
 import { Company } from '@/interfaces/Company';
 
@@ -68,16 +69,27 @@ export const CompaniesForm = () => {
               key={`${name}-${index}`}
               name={name as keyof Company}
               render={({ field }) => (
-                <FormItem>
+                <FormItem
+                  className={type === 'file' ? 'hidden' : ''}
+                >
                   <FormLabel>{label}</FormLabel>
                   <FormControl>
-                    <Input placeholder="" {...field} />
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
         })}
+        <ImageUpload
+          onChange={(value) => {
+            form.setValue('logo', value);
+          }}
+          value={form.watch('logo')}
+        />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
