@@ -8,16 +8,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-
-import * as locales from 'react-date-range/dist/locale';
-import { Calendar } from 'react-date-range';
-
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 import { Product } from '@/interfaces/Product';
+
+import { RenderProperInput } from './RenderProperInput';
 
 const formSchema = z.object({
   shortName: z.string().min(3, {
@@ -32,6 +28,7 @@ const formSchema = z.object({
   priceWithDiscount: z.boolean().default(false),
   barcode: z.string(),
   date: z.date(),
+  companyId: z.string(),
 });
 
 export const ProductForm = () => {
@@ -44,10 +41,13 @@ export const ProductForm = () => {
       priceWithDiscount: false,
       barcode: '',
       date: new Date(),
+      companyId: '',
     }
   });
   const mutation = useMutation((postData: Product) => {
-    return axios.post('/api/admin/products', postData);
+    return axios.post('/api/admin/products', postData).then((response) => {
+      form.reset();
+    });
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -65,6 +65,12 @@ export const ProductForm = () => {
       name: 'name',
       label: 'Name',
       type: 'input',
+      description: '',
+    },
+    {
+      name: 'companyId',
+      label: 'Company',
+      type: 'select',
       description: '',
     },
     {
@@ -93,10 +99,6 @@ export const ProductForm = () => {
     }
   ];
 
-  if (mutation.isSuccess) {
-    form.reset();
-  }
-
   if (mutation.isLoading) {
     return <div>Performing request</div>
   }
@@ -108,54 +110,6 @@ export const ProductForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         {formStructure.map(({name, label, type, description}, index) => {
-          if (type === 'switch') {
-            return <FormField
-              control={form.control}
-              key={`${name}-${index}`}
-              name={name as keyof Product}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
-                    <Switch
-                      className="mt-0"
-                      checked={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    {description}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          }
-
-          if (type === 'calendar') {
-            return <FormField
-            control={form.control}
-            key={`${name}-${index}`}
-            name={name as keyof Product}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{label}</FormLabel>
-                <FormControl>
-                  <Calendar
-                    date={field.value}
-                    onChange={field.onChange}
-                    locale={locales['pl']}
-                  />
-                </FormControl>
-                <FormDescription>
-                  {description}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          }
-
           return <FormField
             control={form.control}
             key={`${name}-${index}`}
@@ -164,7 +118,10 @@ export const ProductForm = () => {
               <FormItem>
                 <FormLabel>{label}</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <RenderProperInput
+                    type={type}
+                    field={field}
+                  />
                 </FormControl>
                 <FormDescription>
                   {description}
@@ -178,4 +135,4 @@ export const ProductForm = () => {
       </form>
     </Form>
   )
-} 
+}

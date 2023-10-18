@@ -25,6 +25,7 @@ export const ProductsTable = () => {
         <TableRow>
           <TableHead>Short name</TableHead>
           <TableHead>Name</TableHead>
+          <TableHead>Company</TableHead>
           <TableHead>Barcode</TableHead>
           <TableHead>Price</TableHead>
           <TableHead>Price with discount</TableHead>
@@ -32,10 +33,11 @@ export const ProductsTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {products.data.map(({id, shortName, name, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => (
+        {products.data.map(({id, shortName, name, company, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => (
           <TableRow key={id}>
             <TableCell>{shortName}</TableCell>
             <TableCell>{name}</TableCell>
+            <TableCell>{company?.name}</TableCell>
             <TableCell>{barcode}</TableCell>
             <TableCell>{date}</TableCell>
             <TableCell>{priceHistory.at(-1)?.price}</TableCell>
