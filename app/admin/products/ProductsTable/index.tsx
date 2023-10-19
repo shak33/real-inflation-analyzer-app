@@ -40,7 +40,7 @@ export const ProductsTable = () => {
             <TableCell>{company?.name}</TableCell>
             <TableCell>{barcode}</TableCell>
             <TableCell>{date}</TableCell>
-            <TableCell>{priceHistory.at(-1)?.price}</TableCell>
+            <TableCell>{priceHistory.at(-1)?.price} PLN</TableCell>
             <TableCell>{priceWithDiscount}</TableCell>
             <TableCell className="flex justify-around">
               <Button>

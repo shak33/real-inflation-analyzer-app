@@ -7,17 +7,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ImageUpload } from "@/components/ImageUpload";
 
 import { Product } from "@/interfaces/Product";
@@ -27,6 +19,7 @@ import { RenderProperInput } from "./RenderProperInput";
 import { formSchema, formStructure } from "../constants";
 
 export const ProductForm = () => {
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,10 +33,17 @@ export const ProductForm = () => {
       receiptImage: "",
     },
   });
-  const mutation = useMutation((postData: Product) => {
-    return axios.post("/api/admin/products", postData).then((response) => {
+
+  const mutation = useMutation({
+    mutationFn: (postData: Product) => {
+      return axios.post("/api/admin/products", postData);
+    },
+    onSuccess: () => {
       form.reset();
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    }
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
