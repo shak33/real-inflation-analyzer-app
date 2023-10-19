@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ImageUpload } from "@/components/ImageUpload";
 
 import { Product } from "@/interfaces/Product";
 
@@ -40,6 +41,7 @@ const formSchema = z.object({
   barcode: z.string(),
   date: z.date(),
   companyId: z.string(),
+  receiptImage: z.string(),
 });
 
 export const ProductForm = () => {
@@ -53,6 +55,7 @@ export const ProductForm = () => {
       barcode: "",
       date: new Date(),
       companyId: "",
+      receiptImage: "",
     },
   });
   const mutation = useMutation((postData: Product) => {
@@ -93,7 +96,7 @@ export const ProductForm = () => {
     {
       name: "price",
       label: "Price",
-      type: "input",
+      type: "number",
       description: "",
     },
     {
@@ -107,6 +110,12 @@ export const ProductForm = () => {
       label: "Date",
       type: "calendar",
       description: "Choose date when product was purchased",
+    },
+    {
+      name: "receiptImage",
+      label: "Receipt image",
+      type: "file",
+      description: "",
     },
   ];
 
@@ -127,11 +136,15 @@ export const ProductForm = () => {
               key={`${name}-${index}`}
               name={name as keyof Product}
               render={({ field }) => (
-                <FormItem>
+                <FormItem
+                  className={type === "file" ? "hidden" : ""}
+                >
                   <FormLabel>{label}</FormLabel>
                   <FormControl>
                     <RenderProperInput
                       field={field}
+                      form={form}
+                      name={name}
                       type={type}
                     />
                   </FormControl>
@@ -142,6 +155,12 @@ export const ProductForm = () => {
             />
           );
         })}
+        <ImageUpload
+          onChange={(value) => {
+            form.setValue("receiptImage", value);
+          }}
+          value={form.watch("receiptImage")}
+        />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
