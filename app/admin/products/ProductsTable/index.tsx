@@ -1,3 +1,6 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+
 import {
   Table,
   TableBody,
@@ -13,10 +16,30 @@ import { useProducts } from "@/hooks/useProducts";
 import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 
 export const ProductsTable = () => {
+  const queryClient = useQueryClient();
   const products = useProducts();
+
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => {
+      return axios.delete(`/api/admin/products/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    },
+  });
+
+  const onRemoveClick = (id: string) => {
+    removeMutation.mutate(id);
+  };
   
   if (products.isLoading) {
     return <div>Loading</div>
+  }
+
+  if (removeMutation.isLoading) {
+    return <div>Performing request. Please wait...</div>;
   }
 
   return (
@@ -46,7 +69,10 @@ export const ProductsTable = () => {
               <Button>
                 Edit
               </Button>
-              <Button variant="destructive">
+              <Button
+                variant="destructive"
+                onClick={() => onRemoveClick(id)}
+              >
                 Remove
               </Button>
             </TableCell>
