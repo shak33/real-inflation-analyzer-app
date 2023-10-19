@@ -24,25 +24,7 @@ import { Product } from "@/interfaces/Product";
 
 import { RenderProperInput } from "./RenderProperInput";
 
-const formSchema = z.object({
-  shortName: z
-    .string()
-    .min(3, {
-      message: "Name must be at least 3 characters long",
-    })
-    .max(255, {
-      message: "Name must be at most 255 characters long",
-    }),
-  name: z.string(),
-  price: z.number().min(0, {
-    message: "Price must be at least 0",
-  }),
-  priceWithDiscount: z.boolean(),
-  barcode: z.string(),
-  date: z.date(),
-  companyId: z.string(),
-  receiptImage: z.string(),
-});
+import { formSchema, formStructure } from "../constants";
 
 export const ProductForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,59 +50,8 @@ export const ProductForm = () => {
     mutation.mutate(values);
   };
 
-  const formStructure = [
-    {
-      name: "shortName",
-      label: "Short name",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "name",
-      label: "Name",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "companyId",
-      label: "Company",
-      type: "select",
-      description: "",
-    },
-    {
-      name: "barcode",
-      label: "Barcode",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "price",
-      label: "Price",
-      type: "number",
-      description: "",
-    },
-    {
-      name: "priceWithDiscount",
-      label: "Price with discount",
-      type: "switch",
-      description: "",
-    },
-    {
-      name: "date",
-      label: "Date",
-      type: "calendar",
-      description: "Choose date when product was purchased",
-    },
-    {
-      name: "receiptImage",
-      label: "Receipt image",
-      type: "file",
-      description: "",
-    },
-  ];
-
   if (mutation.isLoading) {
-    return <div>Performing request</div>;
+    return <div>Adding product to the system. Please wait...</div>;
   }
 
   return (

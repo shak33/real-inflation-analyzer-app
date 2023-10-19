@@ -13,14 +13,7 @@ import { ImageUpload } from '@/components/ImageUpload';
 
 import { Company } from '@/interfaces/Company';
 
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: 'Name must be at least 3 characters long'
-  }).max(255, {
-    message: 'Name must be at most 255 characters long'
-  }),
-  logo: z.string(),
-})
+import { formSchema, formStructure } from '../constants';
 
 export const CompaniesForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,21 +33,8 @@ export const CompaniesForm = () => {
     mutation.mutate(values);
   }
 
-  const formStructure = [
-    {
-      name: 'name',
-      label: 'Name',
-      type: 'input',
-    },
-    {
-      name: 'logo',
-      label: 'Logo',
-      type: 'file',
-    },
-  ]
-
   if (mutation.isLoading) {
-    return <p>Performing request</p>
+    return <p>Adding company to the system. Please wait...</p>
   }
 
   return (
