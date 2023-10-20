@@ -1,4 +1,5 @@
-"use client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 import Image from "next/image";
 import {
@@ -16,10 +17,30 @@ import { useCompanies } from "@/hooks/useCompanies";
 import { CompaniesTableCompany } from "@/interfaces/CompaniesTableCompany";
 
 export const CompaniesTable = () => {
+  const queryClient = useQueryClient();
   const companies = useCompanies();
+
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => {
+      return axios.delete(`/api/admin/companies/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["companies"],
+      });
+    },
+  });
+
+  const onRemoveClick = (id: string) => {
+    removeMutation.mutate(id);
+  }
 
   if (companies.isLoading) {
     return <div>Loading</div>
+  }
+
+  if (removeMutation.isLoading) {
+    return <div>Performing request. Please wait...</div>;
   }
 
   return (
@@ -47,7 +68,10 @@ export const CompaniesTable = () => {
               <Button>
                 Edit
               </Button>
-              <Button variant="destructive">
+              <Button
+                variant="destructive"
+                onClick={() => onRemoveClick(id)}
+              >
                 Remove
               </Button>
             </TableCell>
