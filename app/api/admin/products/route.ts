@@ -3,10 +3,13 @@ import { NextResponse } from "next/server";
 import prisma from "@/libs/prismadb";
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { shortName, name, price, priceWithDiscount, barcode, companyId } = body;
-
   try {
+    const body = await request.json();
+    const {
+      shortName, name, price, priceWithDiscount, barcode, companyId,
+      receiptImage,
+    } = body;
+
     const product = await prisma.product.create({
       data: {
         shortName,
@@ -21,6 +24,7 @@ export async function POST(request: Request) {
         productId: product.id,
         price,
         priceWithDiscount,
+        receiptImage,
       },
     });
 

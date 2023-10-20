@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 interface NavbarProps {
-  currentUser: User | null;
+  currentUser?: User | null;
 }
 
 export const Navbar:React.FC<NavbarProps> = ({

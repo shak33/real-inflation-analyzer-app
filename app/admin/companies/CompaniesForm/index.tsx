@@ -4,25 +4,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ImageUpload } from '@/components/ImageUpload';
 
 import { Company } from '@/interfaces/Company';
 
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: 'Name must be at least 3 characters long'
-  }).max(255, {
-    message: 'Name must be at most 255 characters long'
-  }),
-  logo: z.string(),
-})
+import { formSchema, formStructure } from '../constants';
 
 export const CompaniesForm = () => {
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,31 +24,25 @@ export const CompaniesForm = () => {
       logo: '',
     }
   });
-  const mutation = useMutation((postData: Company) => {
-    return axios.post('/api/admin/companies', postData).then((response) => {
+
+  const mutation = useMutation({
+    mutationFn: (postData: Company) => {
+      return axios.post('/api/admin/companies', postData);
+    },
+    onSuccess: () => {
       form.reset();
-    });
+      queryClient.invalidateQueries({
+        queryKey: ['companies'],
+      });
+    }
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutation.mutate(values);
   }
 
-  const formStructure = [
-    {
-      name: 'name',
-      label: 'Name',
-      type: 'input',
-    },
-    {
-      name: 'logo',
-      label: 'Logo',
-      type: 'file',
-    },
-  ]
-
   if (mutation.isLoading) {
-    return <p>Performing request</p>
+    return <p>Adding company to the system. Please wait...</p>
   }
 
   return (

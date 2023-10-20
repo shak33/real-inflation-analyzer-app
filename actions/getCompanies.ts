@@ -16,7 +16,11 @@ export async function getCompanies({
       return company;
     }
 
-    const companies = await prisma.company.findMany();
+    const companies = await prisma.company.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
     return companies;
   } catch (error: any) {

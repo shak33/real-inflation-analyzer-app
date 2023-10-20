@@ -11,12 +11,14 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface RenderProperInputProps {
-  type: string;
   field: any;
+  form: any;
+  name: string;
+  type: string;
 }
 
 export const RenderProperInput: React.FC<RenderProperInputProps> = ({
-  type, field
+  field, form, name, type,
 }) => {
   const companies = useCompanies();
 
@@ -26,7 +28,7 @@ export const RenderProperInput: React.FC<RenderProperInputProps> = ({
         id="price-with-discount"
         className="mt-0"
         checked={field.value}
-        onChange={field.onChange}
+        onCheckedChange={field.onChange}
       />
       <Label htmlFor="price-with-discount"></Label>
     </div>
@@ -55,6 +57,8 @@ export const RenderProperInput: React.FC<RenderProperInputProps> = ({
         ))}
       </SelectContent>
     </Select>
+  } else if (type === 'number') {
+    return <Input placeholder="" {...field} {...form.register(name, {valueAsNumber: true})} />
   } else {
     return <Input placeholder="" {...field} />
   }

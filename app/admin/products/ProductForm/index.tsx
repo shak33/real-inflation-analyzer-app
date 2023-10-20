@@ -7,42 +7,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { ImageUpload } from "@/components/ImageUpload";
 
 import { Product } from "@/interfaces/Product";
 
 import { RenderProperInput } from "./RenderProperInput";
 
-const formSchema = z.object({
-  shortName: z
-    .string()
-    .min(3, {
-      message: "Name must be at least 3 characters long",
-    })
-    .max(255, {
-      message: "Name must be at most 255 characters long",
-    }),
-  name: z.string(),
-  price: z.number().min(0, {
-    message: "Price must be at least 0",
-  }),
-  priceWithDiscount: z.boolean(),
-  barcode: z.string(),
-  date: z.date(),
-  companyId: z.string(),
-});
+import { formSchema, formStructureLeft, formStructureRight } from "../constants";
 
 export const ProductForm = () => {
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,96 +30,106 @@ export const ProductForm = () => {
       barcode: "",
       date: new Date(),
       companyId: "",
+      receiptImage: "",
     },
   });
-  const mutation = useMutation((postData: Product) => {
-    return axios.post("/api/admin/products", postData).then((response) => {
+
+  const mutation = useMutation({
+    mutationFn: (postData: Product) => {
+      return axios.post("/api/admin/products", postData);
+    },
+    onSuccess: () => {
       form.reset();
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    }
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutation.mutate(values);
   };
 
-  const formStructure = [
-    {
-      name: "shortName",
-      label: "Short name",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "name",
-      label: "Name",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "companyId",
-      label: "Company",
-      type: "select",
-      description: "",
-    },
-    {
-      name: "barcode",
-      label: "Barcode",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "price",
-      label: "Price",
-      type: "input",
-      description: "",
-    },
-    {
-      name: "priceWithDiscount",
-      label: "Price with discount",
-      type: "switch",
-      description: "",
-    },
-    {
-      name: "date",
-      label: "Date",
-      type: "calendar",
-      description: "Choose date when product was purchased",
-    },
-  ];
-
   if (mutation.isLoading) {
-    return <div>Performing request</div>;
+    return <div>Adding product to the system. Please wait...</div>;
   }
 
   return (
     <Form {...form}>
       <form
-        className="flex flex-col gap-4 w-full"
+        className="flex flex-col gap-4 w-full mb-24"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        {formStructure.map(({ name, label, type, description }, index) => {
-          return (
-            <FormField
-              control={form.control}
-              key={`${name}-${index}`}
-              name={name as keyof Product}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
-                    <RenderProperInput
-                      field={field}
-                      type={type}
-                    />
-                  </FormControl>
-                  <FormDescription>{description}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <div className="flex flex-row justify-between">
+          <div className="basis-1/2">
+            {formStructureLeft.map(({ name, label, type, description }, index) => {
+              return (
+                <FormField
+                  control={form.control}
+                  key={`${name}-${index}`}
+                  name={name as keyof Product}
+                  render={({ field }) => (
+                    <FormItem
+                      className={type === "file" ? "hidden" : ""}
+                    >
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <RenderProperInput
+                          field={field}
+                          form={form}
+                          name={name}
+                          type={type}
+                        />
+                      </FormControl>
+                      <FormDescription>{description}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <Button
+              type="submit"
+              className="w-full mt-2"
+            >
+              Submit
+            </Button>
+          </div>
+          <div className="basis-1/4">
+            {formStructureRight.map(({ name, label, type, description }, index) => {
+              return (
+                <FormField
+                  control={form.control}
+                  key={`${name}-${index}`}
+                  name={name as keyof Product}
+                  render={({ field }) => (
+                    <FormItem
+                      className={type === "file" ? "hidden" : ""}
+                    >
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <RenderProperInput
+                          field={field}
+                          form={form}
+                          name={name}
+                          type={type}
+                        />
+                      </FormControl>
+                      <FormDescription>{description}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <ImageUpload
+              onChange={(value) => {
+                form.setValue("receiptImage", value);
+              }}
+              value={form.watch("receiptImage")}
             />
-          );
-        })}
-        <Button type="submit">Submit</Button>
+          </div>
+        </div>
       </form>
     </Form>
   );

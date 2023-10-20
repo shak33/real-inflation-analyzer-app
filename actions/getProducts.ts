@@ -25,6 +25,9 @@ export async function getProducts({
         priceHistory: true,
         company: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      }
     });
 
     return products;

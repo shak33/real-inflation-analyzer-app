@@ -1,4 +1,4 @@
-import nextJest from "next/jest.js";
+const nextJest = require("next/jest.js");
 
 const createJstConfig = nextJest({
   dir: './',
@@ -10,4 +10,4 @@ const config = {
   preset: 'ts-jest',
 };
 
-export default createJstConfig(config);
+module.exports = createJstConfig(config);
