@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -65,16 +67,20 @@ export const ProductsTable = () => {
             <TableCell>{date}</TableCell>
             <TableCell>{priceHistory.at(-1)?.price} PLN</TableCell>
             <TableCell>{priceWithDiscount}</TableCell>
-            <TableCell className="flex justify-around">
-              <Button>
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => onRemoveClick(id)}
-              >
-                Remove
-              </Button>
+            <TableCell>
+              <div className="flex justify-end">
+                <Button
+                  className="mr-2"
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => onRemoveClick(id)}
+                >
+                  Remove
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

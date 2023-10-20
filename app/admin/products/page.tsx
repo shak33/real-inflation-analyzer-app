@@ -1,5 +1,3 @@
-"use client";
-
 import { ProductsTable } from "./ProductsTable";
 import { ProductForm } from "./ProductForm";
 

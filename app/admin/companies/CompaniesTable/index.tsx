@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -48,14 +50,16 @@ export const CompaniesTable = () => {
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
+          <TableHead>Number of products</TableHead>
           <TableHead>Logo</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {companies.data.map(({id, name, logo}: CompaniesTableCompany) => (
+        {companies.data.map(({id, name, products, logo}: CompaniesTableCompany) => (
           <TableRow key={id}>
             <TableCell>{name}</TableCell>
+            <TableCell>{products}</TableCell>
             <TableCell>
               <Image
                 alt={`Logo of ${name}`}
@@ -64,16 +68,20 @@ export const CompaniesTable = () => {
                 height={50}
               />
             </TableCell>
-            <TableCell className="flex justify-around">
-              <Button>
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => onRemoveClick(id)}
-              >
-                Remove
-              </Button>
+            <TableCell>
+              <div className="flex justify-end">
+                <Button
+                  className="mr-2"
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => onRemoveClick(id)}
+                >
+                  Remove
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}
