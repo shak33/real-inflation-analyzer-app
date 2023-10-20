@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { useLoginModal } from "@/hooks/useLoginModal";
 
-import { User } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 
 import { AiOutlineMenu } from 'react-icons/ai';
 
@@ -42,6 +42,13 @@ export const Navbar:React.FC<NavbarProps> = ({
             Products
           </Link>
         </li>
+        {currentUser?.role === Role.ADMIN ?
+          <li className="hover:underline">
+            <Link href="/admin/users">
+              Users
+            </Link>
+          </li>
+        : null}
         {!currentUser ?
           <div className="flex gap-2">
             <li>

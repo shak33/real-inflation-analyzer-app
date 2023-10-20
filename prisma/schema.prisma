@@ -58,7 +58,8 @@ model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   username String? @unique
   email String? @unique
-  emailVerified String?
+  emailVerified Boolean @default(false)
+  active Boolean @default(true)
   image String?
   password String?
   createdAt DateTime @default(now())
