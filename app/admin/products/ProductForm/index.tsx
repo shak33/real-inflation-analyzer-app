@@ -16,7 +16,7 @@ import { Product } from "@/interfaces/Product";
 
 import { RenderProperInput } from "./RenderProperInput";
 
-import { formSchema, formStructure } from "../constants";
+import { formSchema, formStructureLeft, formStructureRight } from "../constants";
 
 export const ProductForm = () => {
   const queryClient = useQueryClient();
@@ -57,42 +57,79 @@ export const ProductForm = () => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col gap-4 w-full"
+        className="flex flex-col gap-4 w-full mb-24"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        {formStructure.map(({ name, label, type, description }, index) => {
-          return (
-            <FormField
-              control={form.control}
-              key={`${name}-${index}`}
-              name={name as keyof Product}
-              render={({ field }) => (
-                <FormItem
-                  className={type === "file" ? "hidden" : ""}
-                >
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
-                    <RenderProperInput
-                      field={field}
-                      form={form}
-                      name={name}
-                      type={type}
-                    />
-                  </FormControl>
-                  <FormDescription>{description}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <div className="flex flex-row justify-between">
+          <div className="basis-1/2">
+            {formStructureLeft.map(({ name, label, type, description }, index) => {
+              return (
+                <FormField
+                  control={form.control}
+                  key={`${name}-${index}`}
+                  name={name as keyof Product}
+                  render={({ field }) => (
+                    <FormItem
+                      className={type === "file" ? "hidden" : ""}
+                    >
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <RenderProperInput
+                          field={field}
+                          form={form}
+                          name={name}
+                          type={type}
+                        />
+                      </FormControl>
+                      <FormDescription>{description}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <Button
+              type="submit"
+              className="w-full mt-2"
+            >
+              Submit
+            </Button>
+          </div>
+          <div className="basis-1/4">
+            {formStructureRight.map(({ name, label, type, description }, index) => {
+              return (
+                <FormField
+                  control={form.control}
+                  key={`${name}-${index}`}
+                  name={name as keyof Product}
+                  render={({ field }) => (
+                    <FormItem
+                      className={type === "file" ? "hidden" : ""}
+                    >
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <RenderProperInput
+                          field={field}
+                          form={form}
+                          name={name}
+                          type={type}
+                        />
+                      </FormControl>
+                      <FormDescription>{description}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <ImageUpload
+              onChange={(value) => {
+                form.setValue("receiptImage", value);
+              }}
+              value={form.watch("receiptImage")}
             />
-          );
-        })}
-        <ImageUpload
-          onChange={(value) => {
-            form.setValue("receiptImage", value);
-          }}
-          value={form.watch("receiptImage")}
-        />
-        <Button type="submit">Submit</Button>
+          </div>
+        </div>
       </form>
     </Form>
   );

@@ -20,7 +20,7 @@ export const formSchema = z.object({
   receiptImage: z.string(),
 });
 
-export const formStructure = [
+export const formStructureLeft = [
   {
     name: "shortName",
     label: "Short name",
@@ -57,6 +57,9 @@ export const formStructure = [
     type: "switch",
     description: "",
   },
+];
+
+export const formStructureRight = [
   {
     name: "date",
     label: "Date",
@@ -69,4 +72,4 @@ export const formStructure = [
     type: "file",
     description: "",
   },
-];
+]
