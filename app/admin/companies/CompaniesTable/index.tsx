@@ -1,5 +1,8 @@
 "use client";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+
 import Image from "next/image";
 import {
   Table,
@@ -16,10 +19,30 @@ import { useCompanies } from "@/hooks/useCompanies";
 import { CompaniesTableCompany } from "@/interfaces/CompaniesTableCompany";
 
 export const CompaniesTable = () => {
+  const queryClient = useQueryClient();
   const companies = useCompanies();
+
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => {
+      return axios.delete(`/api/admin/companies/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["companies"],
+      });
+    },
+  });
+
+  const onRemoveClick = (id: string) => {
+    removeMutation.mutate(id);
+  }
 
   if (companies.isLoading) {
     return <div>Loading</div>
+  }
+
+  if (removeMutation.isLoading) {
+    return <div>Performing request. Please wait...</div>;
   }
 
   return (
@@ -27,14 +50,16 @@ export const CompaniesTable = () => {
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
+          <TableHead>Number of products</TableHead>
           <TableHead>Logo</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {companies.data.map(({id, name, logo}: CompaniesTableCompany) => (
+        {companies.data.map(({id, name, products, logo}: CompaniesTableCompany) => (
           <TableRow key={id}>
             <TableCell>{name}</TableCell>
+            <TableCell>{products}</TableCell>
             <TableCell>
               <Image
                 alt={`Logo of ${name}`}
@@ -43,13 +68,20 @@ export const CompaniesTable = () => {
                 height={50}
               />
             </TableCell>
-            <TableCell className="flex justify-around">
-              <Button>
-                Edit
-              </Button>
-              <Button variant="destructive">
-                Remove
-              </Button>
+            <TableCell>
+              <div className="flex justify-end">
+                <Button
+                  className="mr-2"
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => onRemoveClick(id)}
+                >
+                  Remove
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

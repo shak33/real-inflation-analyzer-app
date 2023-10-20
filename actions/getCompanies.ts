@@ -11,6 +11,9 @@ export async function getCompanies({
         where: {
           id,
         },
+        include: {
+          products: true,
+        }
       });
 
       return company;
@@ -20,9 +23,17 @@ export async function getCompanies({
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        products: true,
+      }
     });
 
-    return companies;
+    const companiesWithProducts = companies.map((company) => ({
+      ...company,
+      products: company.products.length,
+    }));
+
+    return companiesWithProducts;
   } catch (error: any) {
     return [];
   }
