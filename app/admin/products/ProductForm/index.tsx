@@ -9,17 +9,32 @@ import * as z from "zod";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { ImageUpload } from "@/components/ImageUpload";
+
+import { useReceiptFromDate } from "@/hooks/useReceiptFromDate";
 
 import { Product } from "@/interfaces/Product";
 
 import { RenderProperInput } from "./RenderProperInput";
 
-import { formSchema, formStructureLeft, formStructureRight } from "../constants";
+import {
+  formSchema,
+  formStructureLeft,
+  formStructureRight,
+} from "../constants";
 
 export const ProductForm = () => {
   const queryClient = useQueryClient();
+  const { receipts } = useReceiptFromDate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,7 +58,7 @@ export const ProductForm = () => {
       queryClient.invalidateQueries({
         queryKey: ["products"],
       });
-    }
+    },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -62,66 +77,63 @@ export const ProductForm = () => {
       >
         <div className="flex flex-row justify-between">
           <div className="basis-1/2">
-            {formStructureLeft.map(({ name, label, type, description }, index) => {
-              return (
-                <FormField
-                  control={form.control}
-                  key={`${name}-${index}`}
-                  name={name as keyof Product}
-                  render={({ field }) => (
-                    <FormItem
-                      className={type === "file" ? "hidden" : ""}
-                    >
-                      <FormLabel>{label}</FormLabel>
-                      <FormControl>
-                        <RenderProperInput
-                          field={field}
-                          form={form}
-                          name={name}
-                          type={type}
-                        />
-                      </FormControl>
-                      <FormDescription>{description}</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              );
-            })}
-            <Button
-              type="submit"
-              className="w-full mt-2"
-            >
+            {formStructureLeft.map(
+              ({ name, label, type, description }, index) => {
+                return (
+                  <FormField
+                    control={form.control}
+                    key={`${name}-${index}`}
+                    name={name as keyof Product}
+                    render={({ field }) => (
+                      <FormItem className={type === "file" ? "hidden" : ""}>
+                        <FormLabel>{label}</FormLabel>
+                        <FormControl>
+                          <RenderProperInput
+                            field={field}
+                            form={form}
+                            name={name}
+                            type={type}
+                          />
+                        </FormControl>
+                        <FormDescription>{description}</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              },
+            )}
+            <Button type="submit" className="w-full mt-2">
               Submit
             </Button>
           </div>
           <div className="basis-1/4">
-            {formStructureRight.map(({ name, label, type, description }, index) => {
-              return (
-                <FormField
-                  control={form.control}
-                  key={`${name}-${index}`}
-                  name={name as keyof Product}
-                  render={({ field }) => (
-                    <FormItem
-                      className={type === "file" ? "hidden" : ""}
-                    >
-                      <FormLabel>{label}</FormLabel>
-                      <FormControl>
-                        <RenderProperInput
-                          field={field}
-                          form={form}
-                          name={name}
-                          type={type}
-                        />
-                      </FormControl>
-                      <FormDescription>{description}</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              );
-            })}
+            {formStructureRight.map(
+              ({ name, label, type, description }, index) => {
+                return (
+                  <FormField
+                    control={form.control}
+                    key={`${name}-${index}`}
+                    name={name as keyof Product}
+                    render={({ field }) => (
+                      <FormItem className={type === "file" ? "hidden" : ""}>
+                        <FormLabel>{label}</FormLabel>
+                        <FormControl>
+                          <RenderProperInput
+                            field={field}
+                            form={form}
+                            name={name}
+                            type={type}
+                          />
+                        </FormControl>
+                        <FormDescription>{description}</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              },
+            )}
             <ImageUpload
               onChange={(value) => {
                 form.setValue("receiptImage", value);

@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       shortName, name, price, priceWithDiscount, barcode, companyId,
-      receiptImage,
+      receiptImage, date,
     } = body;
 
     const product = await prisma.product.create({
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
         price,
         priceWithDiscount,
         receiptImage,
+        date,
       },
     });
 
