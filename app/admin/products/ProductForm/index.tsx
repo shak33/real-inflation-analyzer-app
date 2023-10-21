@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { ImageUpload } from "@/components/ImageUpload";
 
-import { useReceiptFromDate } from "@/hooks/useReceiptFromDate";
+import { useReceiptFromDate } from "@/hooks/useReceiptByDate";
 
 import { Product } from "@/interfaces/Product";
 

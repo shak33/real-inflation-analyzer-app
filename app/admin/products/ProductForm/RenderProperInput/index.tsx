@@ -4,7 +4,7 @@ import { Calendar } from "react-date-range";
 import { Company } from "@prisma/client";
 
 import { useCompanies } from "@/hooks/useCompanies";
-import { useReceiptFromDate } from "@/hooks/useReceiptFromDate";
+import { useReceiptFromDate } from "@/hooks/useReceiptByDate";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
