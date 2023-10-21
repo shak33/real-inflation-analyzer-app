@@ -59,6 +59,7 @@ export const ProductForm = () => {
       <form
         className="flex flex-col gap-4 w-full mb-24"
         onSubmit={form.handleSubmit(onSubmit)}
+        data-tesetid="products-form"
       >
         <div className="flex flex-row justify-between">
           <div className="basis-1/2">

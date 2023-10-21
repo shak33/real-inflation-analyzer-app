@@ -8,5 +8,5 @@ export default function ProductsPage() {
       <ProductForm />
       <ProductsTable />
     </>
-  );
-}
+  )
+};

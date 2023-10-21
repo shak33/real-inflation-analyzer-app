@@ -50,6 +50,7 @@ export const CompaniesForm = () => {
       <form
         className="flex flex-col gap-4 w-full"
         onSubmit={form.handleSubmit(onSubmit)}
+        data-testid="companies-form"
       >
           {formStructure.map(({name, label, type}, index) => {
             return <FormField
