@@ -1,5 +1,5 @@
-import { CompaniesForm } from './CompaniesForm';
-import { CompaniesTable } from './CompaniesTable';
+import { CompaniesForm } from "./CompaniesForm";
+import { CompaniesTable } from "./CompaniesTable";
 
 export default function CompaniesPage() {
   return (
@@ -8,5 +8,5 @@ export default function CompaniesPage() {
       <CompaniesForm />
       <CompaniesTable />
     </>
-  )
-};
+  );
+}
