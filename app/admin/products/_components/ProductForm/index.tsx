@@ -24,13 +24,13 @@ import { useReceiptFromDate } from "@/hooks/useReceiptByDate";
 
 import { Product } from "@/interfaces/Product";
 
-import { RenderProperInput } from "./RenderProperInput";
+import { RenderProperInput } from "../RenderProperInput";
 
 import {
   formSchema,
   formStructureLeft,
   formStructureRight,
-} from "../constants";
+} from "../../constants";
 
 export const ProductForm = () => {
   const queryClient = useQueryClient();

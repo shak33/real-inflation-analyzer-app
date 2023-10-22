@@ -60,7 +60,11 @@ export const RenderProperInput: React.FC<RenderProperInputProps> = ({
     );
   } else if (type === "select") {
     return (
-      <Select onValueChange={field.onChange} defaultValue={field.value}>
+      <Select
+        onValueChange={field.onChange}
+        defaultValue={field.value}
+        value={field.value}
+      >
         <SelectTrigger>
           <SelectValue />
         </SelectTrigger>

@@ -13,5 +13,5 @@ export interface ProductsTableProduct {
   barcode: string;
   date: string;
   priceHistory: PriceHistory[]
-  priceWithDiscount: number;
+  priceWithDiscount: boolean;
 }

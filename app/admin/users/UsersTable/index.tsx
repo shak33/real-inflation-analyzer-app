@@ -13,8 +13,6 @@ export const UsersTable = () => {
     return <div>Loading</div>
   }
 
-  console.log(users);
-
   return (
     <Table>
       <TableHeader>
