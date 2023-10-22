@@ -1,5 +1,5 @@
-import { ProductsTable } from "./ProductsTable";
-import { ProductForm } from "./ProductForm";
+import { ProductsTable } from "./_components/ProductsTable";
+import { ProductForm } from "./_components/ProductForm";
 
 export default function ProductsPage() {
   return (

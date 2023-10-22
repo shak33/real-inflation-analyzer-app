@@ -1,10 +1,12 @@
 import prisma from '@/libs/prismadb';
 
+interface GetProductProps {
+  id?: string;
+}
+
 export async function getProducts({
   id,
-}: {
-  id?: string;
-}) {
+} : GetProductProps) {
   try {
     if (id) {
       const product = await prisma.product.findUnique({

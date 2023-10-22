@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -19,7 +20,8 @@ import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 
 export const ProductsTable = () => {
   const queryClient = useQueryClient();
-  const products = useProducts();
+  const products = useProducts({});
+  const router = useRouter();
 
   const removeMutation = useMutation({
     mutationFn: (id: string) => {
@@ -31,6 +33,10 @@ export const ProductsTable = () => {
       });
     },
   });
+
+  const onEditClick = (id: string) => {
+    router.push(`/admin/products/${id}`);
+  }
 
   const onRemoveClick = (id: string) => {
     removeMutation.mutate(id);
@@ -71,6 +77,7 @@ export const ProductsTable = () => {
               <div className="flex justify-end">
                 <Button
                   className="mr-2"
+                  onClick={() => onEditClick(id)}
                 >
                   Edit
                 </Button>
