@@ -51,7 +51,9 @@ export const ProductsTable = () => {
   }
 
   return (
-    <Table>
+    <Table
+      data-testid="products-table"
+    >
       <TableHeader>
         <TableRow>
           <TableHead>Short name</TableHead>

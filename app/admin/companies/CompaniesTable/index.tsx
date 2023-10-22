@@ -46,7 +46,9 @@ export const CompaniesTable = () => {
   }
 
   return (
-    <Table>
+    <Table
+      data-testid="companies-table"
+    >
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
