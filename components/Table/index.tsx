@@ -46,22 +46,26 @@ export const CustomTable = ({
               </TableCell>
             ))}
             {onEditClick || onRemoveClick ?
-              <TableCell>
-                {onEditClick ?
-                  <Button
-                    onClick={() => onEditClick(row.id)}
-                  >
-                    Edit
-                  </Button>
-                : null}
-                {onRemoveClick ?
-                  <Button
-                    onClick={() => onRemoveClick(row.id)}
-                  >
-                    Remove
-                  </Button>
-                : null}
-              </TableCell>
+              <div className="flex justify-end">
+                <TableCell>
+                  {onEditClick ?
+                    <Button
+                      className="mr-2"
+                      onClick={() => onEditClick(row.id)}
+                    >
+                      Edit
+                    </Button>
+                  : null}
+                  {onRemoveClick ?
+                    <Button
+                      variant="destructive"
+                      onClick={() => onRemoveClick(row.id)}
+                    >
+                      Remove
+                    </Button>
+                  : null}
+                </TableCell>
+              </div>
             : null}
           </TableRow>
         ))}
