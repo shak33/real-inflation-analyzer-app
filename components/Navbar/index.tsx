@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { useLoginModal } from "@/hooks/useLoginModal";
@@ -23,6 +26,12 @@ export const Navbar:React.FC<NavbarProps> = ({
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOpen = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <div className="flex justify-between items-center h-full py-3 px-8 border-b-[2px]">
       <Image
@@ -31,7 +40,7 @@ export const Navbar:React.FC<NavbarProps> = ({
         width="150"
         height="50"
       />
-      <ul className="flex items-center gap-8">
+      <ul className="flex items-center gap-8 relative">
         <li className="hover:underline">
           <Link href="/admin/companies">
             Companies
@@ -62,7 +71,10 @@ export const Navbar:React.FC<NavbarProps> = ({
               </Button>
             </li>
           </div>
-          : <div className="p-4 md:py-1 md:px-3 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition">
+          : <div
+              className="p-4 md:py-1 md:px-3 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+              onClick={toggleOpen}
+            >
             <AiOutlineMenu />
             <Avatar>
               <AvatarImage
@@ -71,6 +83,19 @@ export const Navbar:React.FC<NavbarProps> = ({
               />
             </Avatar>
           </div>}
+          {isOpen && currentUser ?
+            <div
+              className="absolute reounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-14 text-sm border-b-[1px]"
+            >
+              <div className="flex flex-col cursor-pointer">
+                <div className="py-2 px-4 hover:bg-neutral-100 transition">
+                  <button onClick={() => signOut()}>
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          : null}
       </ul>
     </div>
   )
