@@ -2,7 +2,7 @@ import { Company } from "@prisma/client";
 
 interface PriceHistory {
   price: number;
-  priceWithoutDiscount: boolean;
+  priceWithDiscount: boolean;
 }
 
 export interface ProductsTableProduct {
@@ -13,5 +13,4 @@ export interface ProductsTableProduct {
   barcode: string;
   date: string;
   priceHistory: PriceHistory[]
-  priceWithDiscount: boolean;
 }

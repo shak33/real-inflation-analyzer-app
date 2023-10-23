@@ -1,3 +1,7 @@
+"use client";
+
+import { useEditRow } from "@/hooks/useEditRow";
+
 import {
   Table,
   TableBody,
@@ -21,6 +25,8 @@ export const CustomTable = ({
   onEditClick,
   onRemoveClick,
 } : CustomTableProps) => {
+  const { editId } = useEditRow();
+
   return (
     <Table>
       <TableHeader>
@@ -40,11 +46,11 @@ export const CustomTable = ({
       <TableBody>
         {tableBody.map((row: any) => (
           <TableRow key={row.id}>
-            {Object.entries(row).map(([key, value]) => (
+            {Object.entries(row).map(([key, value]) => key !== "id" ? (
               <TableCell key={`${row.id}-${key}`}>
                 {value as string}
               </TableCell>
-            ))}
+            ) : null)}
             {onEditClick || onRemoveClick ?
               <TableCell>
                 <div className="flex justify-end">

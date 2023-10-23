@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -20,20 +21,18 @@ export const ProductsTable = () => {
     "Name",
     "Company",
     "Barcode",
-    "Date",
     "Price",
     "Price with discount",
   ];
 
-  const tableBody = products?.data?.map(({id, shortName, name, company, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => ({
+  const tableBody = products?.data?.map(({id, shortName, name, company, barcode, date, priceHistory}: ProductsTableProduct) => ({
     id,
     shortName,
     name,
     company: company?.name,
     barcode,
-    date,
     price: priceHistory.at(-1)?.price,
-    priceWithDiscount,
+    priceWithDiscount: priceHistory.at(-1)?.priceWithDiscount ? 'Yes' : 'No',
   }));
 
   const removeMutation = useMutation({
@@ -47,13 +46,13 @@ export const ProductsTable = () => {
     },
   });
 
-  const onEditClick = (id: string) => {
+  const onEditClick = useCallback((id: string) => {
     router.push(`/admin/products/${id}`);
-  }
+  }, [router]);
 
-  const onRemoveClick = (id: string) => {
+  const onRemoveClick = useCallback((id: string) => {
     removeMutation.mutate(id);
-  };
+  }, [removeMutation]);
   
   if (products.isLoading) {
     return <div>Loading</div>
