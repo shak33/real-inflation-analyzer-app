@@ -14,9 +14,13 @@ export async function getProducts({
           id,
         },
         include: {
-          priceHistory: true,
+          priceHistory: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
           company: true,
-        }
+        },
       });
 
       return product;
