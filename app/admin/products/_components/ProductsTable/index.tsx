@@ -1,18 +1,11 @@
 "use client";
 
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { CustomTable } from "@/components/Table";
 
 import { useProducts } from "@/hooks/useProducts";
 
@@ -22,6 +15,25 @@ export const ProductsTable = () => {
   const queryClient = useQueryClient();
   const products = useProducts({});
   const router = useRouter();
+
+  const tableHead = [
+    "Short name",
+    "Name",
+    "Company",
+    "Barcode",
+    "Price",
+    "Price with discount",
+  ];
+
+  const tableBody = products?.data?.map(({id, shortName, name, company, barcode, date, priceHistory}: ProductsTableProduct) => ({
+    id,
+    shortName,
+    name,
+    company: company?.name,
+    barcode,
+    price: priceHistory.at(-1)?.price,
+    priceWithDiscount: priceHistory.at(-1)?.priceWithDiscount ? 'Yes' : 'No',
+  }));
 
   const removeMutation = useMutation({
     mutationFn: (id: string) => {
@@ -34,66 +46,28 @@ export const ProductsTable = () => {
     },
   });
 
-  const onEditClick = (id: string) => {
+  const onEditClick = useCallback((id: string) => {
     router.push(`/admin/products/${id}`);
-  }
+  }, [router]);
 
-  const onRemoveClick = (id: string) => {
+  const onRemoveClick = useCallback((id: string) => {
     removeMutation.mutate(id);
-  };
+  }, [removeMutation]);
   
   if (products.isLoading) {
     return <div>Loading</div>
   }
 
   if (removeMutation.isLoading) {
-    return <div>Performing request. Please wait...</div>;
+    return <div>Removing product. Please wait...</div>;
   }
 
   return (
-    <Table
-      data-testid="products-table"
-    >
-      <TableHeader>
-        <TableRow>
-          <TableHead>Short name</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Company</TableHead>
-          <TableHead>Barcode</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Price with discount</TableHead>
-          <TableHead></TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {products.data.map(({id, shortName, name, company, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => (
-          <TableRow key={id}>
-            <TableCell>{shortName}</TableCell>
-            <TableCell>{name}</TableCell>
-            <TableCell>{company?.name}</TableCell>
-            <TableCell>{barcode}</TableCell>
-            <TableCell>{date}</TableCell>
-            <TableCell>{priceHistory.at(-1)?.price} PLN</TableCell>
-            <TableCell>{priceWithDiscount}</TableCell>
-            <TableCell>
-              <div className="flex justify-end">
-                <Button
-                  className="mr-2"
-                  onClick={() => onEditClick(id)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => onRemoveClick(id)}
-                >
-                  Remove
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <CustomTable
+      tableHead={tableHead}
+      tableBody={tableBody}
+      onEditClick={onEditClick}
+      onRemoveClick={onRemoveClick}
+    />
   )
 } 

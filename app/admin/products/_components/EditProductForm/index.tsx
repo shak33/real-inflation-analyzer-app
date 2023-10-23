@@ -39,7 +39,12 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: productData ? {
+      name: productData.name,
+      shortName: productData.shortName,
+      barcode: productData.barcode,
+      companyId: productData.company.id
+    } : {
       name: "",
       shortName: "",
       barcode: "",
@@ -62,17 +67,6 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutation.mutate(values);
   };
-
-  if (productData) {
-    form.setValue("name", productData.name);
-    form.setValue("shortName", productData.shortName);
-    form.setValue("barcode", productData.barcode);
-    form.setValue("companyId", productData.company.id);
-  }
-
-  if (data.isLoading) {
-    return <div>Loading</div>;
-  }
 
   if (mutation.isLoading) {
     return <div>Updating product {form.getValues("name")} in the system. Please wait...</div>;
