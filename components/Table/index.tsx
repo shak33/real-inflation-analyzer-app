@@ -40,11 +40,11 @@ export const CustomTable = ({
       <TableBody>
         {tableBody.map((row: any) => (
           <TableRow key={row.id}>
-            {Object.entries(row).map(([key, value]) => (
+            {Object.entries(row).map(([key, value]) => key !== "id" ? (
               <TableCell key={`${row.id}-${key}`}>
                 {value as string}
               </TableCell>
-            ))}
+            ) : null)}
             {onEditClick || onRemoveClick ?
               <div className="flex justify-end">
                 <TableCell>
