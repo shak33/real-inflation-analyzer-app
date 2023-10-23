@@ -25,15 +25,16 @@ export const ProductsTable = () => {
     "Price with discount",
   ];
 
-  const tableBody = products?.data?.map(({id, shortName, name, company, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => [
+  const tableBody = products?.data?.map(({id, shortName, name, company, barcode, date, priceHistory, priceWithDiscount}: ProductsTableProduct) => ({
+    id,
     shortName,
     name,
-    company?.name,
+    company: company?.name,
     barcode,
     date,
-    priceHistory.at(-1)?.price,
+    price: priceHistory.at(-1)?.price,
     priceWithDiscount,
-  ]);
+  }));
 
   const removeMutation = useMutation({
     mutationFn: (id: string) => {
@@ -59,7 +60,7 @@ export const ProductsTable = () => {
   }
 
   if (removeMutation.isLoading) {
-    return <div>Performing request. Please wait...</div>;
+    return <div>Removing product. Please wait...</div>;
   }
 
   return (

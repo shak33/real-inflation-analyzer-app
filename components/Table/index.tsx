@@ -32,38 +32,38 @@ export const CustomTable = ({
               {column}
             </TableHead>
           ))}
-          {onEditClick || onRemoveClick ?
+          {onEditClick || onRemoveClick ? (
             <TableHead></TableHead>
-          : null}
+          ) : null}
         </TableRow>
       </TableHeader>
       <TableBody>
         {tableBody.map((row: any) => (
           <TableRow key={row.id}>
-            {row.map((value: any) => (
-              <TableCell key={value}>
-                {value}
+            {Object.entries(row).map(([key, value]) => (
+              <TableCell key={`${row.id}-${key}`}>
+                {value as string}
               </TableCell>
             ))}
             {onEditClick || onRemoveClick ?
               <div className="flex justify-end">
                 <TableCell>
-                  {onEditClick ?
+                  {onEditClick ? (
                     <Button
                       className="mr-2"
                       onClick={() => onEditClick(row.id)}
                     >
                       Edit
                     </Button>
-                  : null}
-                  {onRemoveClick ?
+                  ) : null}
+                  {onRemoveClick ? (
                     <Button
                       variant="destructive"
                       onClick={() => onRemoveClick(row.id)}
                     >
                       Remove
                     </Button>
-                  : null}
+                  ) : null}
                 </TableCell>
               </div>
             : null}
