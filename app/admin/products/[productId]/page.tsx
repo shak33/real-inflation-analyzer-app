@@ -2,12 +2,11 @@
 
 import { useProducts } from "@/hooks/useProducts";
 
-import { EditProductForm } from "../_components/EditProductForm";
-
 interface EditProductPageProps {
   productId: string;
 }
 
+import { EditProductForm } from "../_components/EditProductForm";
 import { PriceHistoryTable } from "./_components/PriceHistoryTable";
 
 export default function EditProductPage({ params } : { params: EditProductPageProps}) {
@@ -22,16 +21,12 @@ export default function EditProductPage({ params } : { params: EditProductPagePr
   return (
     <>
       <h1 className="mb-8">Edit product</h1>
-      {product?.data ?
-        <EditProductForm
-          data={product}
-        />
-      : null}
-      {product?.data?.priceHistory ?
-        <PriceHistoryTable
-          data={product.data.priceHistory}
-        />
-      : null}
+      <EditProductForm
+        data={product}
+      />
+      <PriceHistoryTable
+        data={product.data.priceHistory}
+      />
     </>
   )
 }

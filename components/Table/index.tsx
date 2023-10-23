@@ -1,3 +1,7 @@
+"use client";
+
+import { useEditRow } from "@/hooks/useEditRow";
+
 import {
   Table,
   TableBody,
@@ -21,6 +25,8 @@ export const CustomTable = ({
   onEditClick,
   onRemoveClick,
 } : CustomTableProps) => {
+  const { editId } = useEditRow();
+
   return (
     <Table>
       <TableHeader>
