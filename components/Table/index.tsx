@@ -52,8 +52,8 @@ export const CustomTable = ({
               </TableCell>
             ) : null)}
             {onEditClick || onRemoveClick ?
-              <div className="flex justify-end">
-                <TableCell>
+              <TableCell>
+                <div className="flex justify-end">
                   {onEditClick ? (
                     <Button
                       className="mr-2"
@@ -70,8 +70,8 @@ export const CustomTable = ({
                       Remove
                     </Button>
                   ) : null}
-                </TableCell>
-              </div>
+                  </div>
+              </TableCell>
             : null}
           </TableRow>
         ))}
