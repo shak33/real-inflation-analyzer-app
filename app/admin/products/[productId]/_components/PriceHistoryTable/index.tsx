@@ -1,12 +1,9 @@
 "use client";
 
 import { CustomTable } from "@/components/Table";
+import { EditProductHistoryModal } from "@/components/modals/EditProductHistoryModal";
 
 import { ProductPriceHistory } from "@prisma/client";
-
-import { formSchema, formStructure } from "./constants";
-
-import { EditProductHistoryModal } from "@/components/modals/EditProductHistoryModal";
 
 import { useEditProductHistoryModal } from "@/hooks/useEditProductHistoryModal";
 
@@ -22,17 +19,16 @@ export const PriceHistoryTable = ({
   const tableBody = data.map(({id, price, priceWithDiscount, date, receiptImage} : ProductPriceHistory) => ({
     id,
     price,
-    priceWithDiscount,
+    priceWithDiscount: priceWithDiscount ? 'Yes' : 'No',
     date: new Date(date).toLocaleDateString(),
     receiptImage,
   }));
+  const filteredData = data.find(({ id } : ProductPriceHistory) => id === editProductHistoryModal.editedId);
 
   const onEditClick = (rowId: string) => {
     editProductHistoryModal.setEditedRow(rowId);
     editProductHistoryModal.openModal();
   }
-
-  console.log(data);
 
   return (
     <>
@@ -41,11 +37,11 @@ export const PriceHistoryTable = ({
         tableBody={tableBody}
         onEditClick={onEditClick}
       />
-      <EditProductHistoryModal
-        data={data}
-        formSchema={formSchema}
-        formStructure={formStructure}
-      />
+      {filteredData ? (
+        <EditProductHistoryModal
+          data={filteredData}
+        />
+      ) : null}
     </>
   )
 }
