@@ -20,11 +20,9 @@ import {
 } from "@/components/ui/form";
 import { ImageUpload } from "@/components/ImageUpload";
 
-import { useReceiptFromDate } from "@/hooks/useReceiptByDate";
-
 import { Product } from "@/interfaces/Product";
 
-import { RenderProperInput } from "../RenderProperInput";
+import { RenderProperInput } from "../../../../../components/RenderProperInput";
 
 import {
   formSchema,
@@ -34,7 +32,6 @@ import {
 
 export const ProductForm = () => {
   const queryClient = useQueryClient();
-  const { receipts } = useReceiptFromDate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

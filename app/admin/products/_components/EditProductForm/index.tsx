@@ -26,7 +26,7 @@ import {
 import { Product } from "@/interfaces/Product";
 import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 
-import { RenderProperInput } from "../RenderProperInput";
+import { RenderProperInput } from "../../../../../components/RenderProperInput";
 
 import { formSchema, editFormStructureLeft } from "../../constants";
 
@@ -39,17 +39,19 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: productData ? {
-      name: productData.name,
-      shortName: productData.shortName,
-      barcode: productData.barcode,
-      companyId: productData.company.id
-    } : {
-      name: "",
-      shortName: "",
-      barcode: "",
-      companyId: "",
-    },
+    defaultValues: productData
+      ? {
+          name: productData.name,
+          shortName: productData.shortName,
+          barcode: productData.barcode,
+          companyId: productData.company.id,
+        }
+      : {
+          name: "",
+          shortName: "",
+          barcode: "",
+          companyId: "",
+        },
   });
 
   const mutation = useMutation({
@@ -69,7 +71,11 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
   };
 
   if (mutation.isLoading) {
-    return <div>Updating product {form.getValues("name")} in the system. Please wait...</div>;
+    return (
+      <div>
+        Updating product {form.getValues("name")} in the system. Please wait...
+      </div>
+    );
   }
 
   return (
