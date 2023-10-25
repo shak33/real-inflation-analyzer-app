@@ -1,5 +1,8 @@
 "use client";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+
 import { CustomTable } from "@/components/Table";
 import { EditProductHistoryModal } from "@/components/modals/EditProductHistoryModal";
 
@@ -14,6 +17,7 @@ interface PriceHistoryTableProps {
 export const PriceHistoryTable = ({
   data,
 } : PriceHistoryTableProps) => {
+  const queryClient = useQueryClient();
   const editProductHistoryModal = useEditProductHistoryModal();
   const tableHead = ['Price', 'Price with discount', 'Date', 'Receipt'];
   const tableBody = data.map(({id, price, priceWithDiscount, date, receiptImage} : ProductPriceHistory) => ({
@@ -30,12 +34,28 @@ export const PriceHistoryTable = ({
     editProductHistoryModal.openModal();
   }
 
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => {
+      return axios.delete(`/api/admin/products/${id}/price-history/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["product"],
+      });
+    },
+  })
+
+  const onRemoveClick = (id: string) => {
+    removeMutation.mutate(id);
+  }
+
   return (
     <>
       <CustomTable
         tableHead={tableHead}
         tableBody={tableBody}
         onEditClick={onEditClick}
+        onRemoveClick={onRemoveClick}
       />
       {filteredData ? (
         <EditProductHistoryModal
