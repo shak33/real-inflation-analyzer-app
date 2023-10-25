@@ -9,7 +9,6 @@ import * as z from "zod";
 import axios from "axios";
 import {
   useMutation,
-  useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -23,12 +22,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Product } from "@/interfaces/Product";
 import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 
-import { RenderProperInput } from "../RenderProperInput";
+import { RenderProperInput } from "@/components/RenderProperInput";
 
-import { formSchema, editFormStructureLeft } from "../../constants";
+import { formSchema, formStructure } from "./constants";
 
 interface EditProductFormProps {
   data: UseQueryResult<ProductsTableProduct>;
@@ -36,31 +34,26 @@ interface EditProductFormProps {
 
 export const EditProductForm = ({ data }: EditProductFormProps) => {
   const productData = data.data;
-  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: productData ? {
-      name: productData.name,
-      shortName: productData.shortName,
-      barcode: productData.barcode,
-      companyId: productData.company.id
-    } : {
-      name: "",
-      shortName: "",
-      barcode: "",
-      companyId: "",
-    },
+    defaultValues: productData
+      ? {
+          name: productData.name,
+          shortName: productData.shortName,
+          barcode: productData.barcode,
+          companyId: productData.company.id,
+        }
+      : {
+          name: "",
+          shortName: "",
+          barcode: "",
+          companyId: "",
+        },
   });
 
   const mutation = useMutation({
-    mutationFn: (postData: Product) => {
-      return axios.post("/api/admin/products", postData);
-    },
-    onSuccess: () => {
-      form.reset();
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-      });
+    mutationFn: (postData: z.infer<typeof formSchema>) => {
+      return axios.patch(`/api/admin/products/${productData?.id}`, postData);
     },
   });
 
@@ -69,7 +62,11 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
   };
 
   if (mutation.isLoading) {
-    return <div>Updating product {form.getValues("name")} in the system. Please wait...</div>;
+    return (
+      <div>
+        Updating product {form.getValues("name")} in the system. Please wait...
+      </div>
+    );
   }
 
   return (
@@ -80,13 +77,13 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
       >
         <div className="flex flex-row justify-between">
           <div className="basis-1/2">
-            {editFormStructureLeft.map(
+            {formStructure.map(
               ({ name, label, type, description }, index) => {
                 return (
                   <FormField
                     control={form.control}
                     key={`${name}-${index}`}
-                    name={name as keyof Product}
+                    name={name as keyof z.infer<typeof formSchema>}
                     render={({ field }) => (
                       <FormItem className={type === "file" ? "hidden" : ""}>
                         <FormLabel>{label}</FormLabel>

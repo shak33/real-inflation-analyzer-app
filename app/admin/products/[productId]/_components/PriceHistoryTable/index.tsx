@@ -1,10 +1,14 @@
 "use client";
 
-import { useEditRow } from "@/hooks/useEditRow";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 import { CustomTable } from "@/components/Table";
+import { EditProductHistoryModal } from "@/components/modals/EditProductHistoryModal";
 
 import { ProductPriceHistory } from "@prisma/client";
+
+import { useEditProductHistoryModal } from "@/hooks/useEditProductHistoryModal";
 
 interface PriceHistoryTableProps {
   data: ProductPriceHistory[];
@@ -13,26 +17,51 @@ interface PriceHistoryTableProps {
 export const PriceHistoryTable = ({
   data,
 } : PriceHistoryTableProps) => {
-  const { setEditRow } = useEditRow();
+  const queryClient = useQueryClient();
+  const editProductHistoryModal = useEditProductHistoryModal();
   const tableHead = ['Price', 'Price with discount', 'Date', 'Receipt'];
-
   const tableBody = data.map(({id, price, priceWithDiscount, date, receiptImage} : ProductPriceHistory) => ({
     id,
     price,
-    priceWithDiscount,
-    date,
+    priceWithDiscount: priceWithDiscount ? 'Yes' : 'No',
+    date: new Date(date).toLocaleDateString(),
     receiptImage,
   }));
+  const filteredData = data.find(({ id } : ProductPriceHistory) => id === editProductHistoryModal.editedId);
 
   const onEditClick = (rowId: string) => {
-    setEditRow(rowId);
+    editProductHistoryModal.setEditedRow(rowId);
+    editProductHistoryModal.openModal();
+  }
+
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => {
+      return axios.delete(`/api/admin/products/${id}/price-history/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["product"],
+      });
+    },
+  })
+
+  const onRemoveClick = (id: string) => {
+    removeMutation.mutate(id);
   }
 
   return (
-    <CustomTable
-      tableHead={tableHead}
-      tableBody={tableBody}
-      onEditClick={onEditClick}
-    />
+    <>
+      <CustomTable
+        tableHead={tableHead}
+        tableBody={tableBody}
+        onEditClick={onEditClick}
+        onRemoveClick={onRemoveClick}
+      />
+      {filteredData ? (
+        <EditProductHistoryModal
+          data={filteredData}
+        />
+      ) : null}
+    </>
   )
 }

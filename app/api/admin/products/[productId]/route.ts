@@ -6,6 +6,10 @@ interface DeleteParams {
   productId: string;
 }
 
+interface PatchParams {
+  productId: string;
+}
+
 export async function DELETE(
   request: Request,
   { params } : { params: DeleteParams },
@@ -34,6 +38,38 @@ export async function DELETE(
     return NextResponse.json({
       status: 200,
       message: `Product ${product?.shortName} deleted successfully`,
+    });
+  } catch (error: any) {
+    return NextResponse.json({
+      status: 500,
+      message: error.message,
+    });
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  { params } : { params : PatchParams},
+) {
+  try {
+    const { productId } = params;
+    const { shortName, name, companyId, barcode } = await request.json();
+
+    await prisma.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        shortName,
+        name,
+        companyId,
+        barcode,
+      },
+    });
+
+    return NextResponse.json({
+      status: 200,
+      message: `Product ${name} updated successfully`,
     });
   } catch (error: any) {
     return NextResponse.json({
