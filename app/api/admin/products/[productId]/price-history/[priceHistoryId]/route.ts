@@ -12,7 +12,7 @@ interface PatchParams {
 
 export async function DELETE(
   request: Request,
-  { params } : { params : DeleteParams},
+  { params } : { params : DeleteParams },
 ) {
   try {
     const { priceHistoryId } = params;
