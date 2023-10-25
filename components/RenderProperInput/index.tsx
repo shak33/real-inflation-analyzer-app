@@ -83,6 +83,9 @@ export const RenderProperInput: React.FC<RenderProperInputProps> = ({
       />
     );
   } else {
-    return <Input placeholder="" {...field} />;
+    return <Input
+      placeholder=""
+      {...field}
+    />;
   }
 };

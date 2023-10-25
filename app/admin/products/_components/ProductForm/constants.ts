@@ -73,30 +73,3 @@ export const formStructureRight = [
     description: "",
   },
 ]
-
-export const editFormStructureLeft = [
-  {
-    name: "shortName",
-    label: "Short name",
-    type: "input",
-    description: "",
-  },
-  {
-    name: "name",
-    label: "Name",
-    type: "input",
-    description: "",
-  },
-  {
-    name: "companyId",
-    label: "Company",
-    type: "select",
-    description: "",
-  },
-  {
-    name: "barcode",
-    label: "Barcode",
-    type: "input",
-    description: "",
-  },
-];

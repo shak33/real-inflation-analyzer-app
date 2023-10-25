@@ -8,6 +8,7 @@ export function useCompanies() {
       const { data } = await axios.get('/api/companies');
       return data.data;
     },
+    refetchOnWindowFocus: false,
   });
 
   return companies;

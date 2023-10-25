@@ -20,15 +20,13 @@ import {
 } from "@/components/ui/form";
 import { ImageUpload } from "@/components/ImageUpload";
 
-import { Product } from "@/interfaces/Product";
-
-import { RenderProperInput } from "../../../../../components/RenderProperInput";
+import { RenderProperInput } from "@/components/RenderProperInput";
 
 import {
   formSchema,
   formStructureLeft,
   formStructureRight,
-} from "../../constants";
+} from "./constants";
 
 export const ProductForm = () => {
   const queryClient = useQueryClient();
@@ -47,7 +45,7 @@ export const ProductForm = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (postData: Product) => {
+    mutationFn: (postData: z.infer<typeof formSchema>) => {
       return axios.post("/api/admin/products", postData);
     },
     onSuccess: () => {
@@ -80,7 +78,7 @@ export const ProductForm = () => {
                   <FormField
                     control={form.control}
                     key={`${name}-${index}`}
-                    name={name as keyof Product}
+                    name={name as keyof z.infer<typeof formSchema>}
                     render={({ field }) => (
                       <FormItem className={type === "file" ? "hidden" : ""}>
                         <FormLabel>{label}</FormLabel>
@@ -111,7 +109,7 @@ export const ProductForm = () => {
                   <FormField
                     control={form.control}
                     key={`${name}-${index}`}
-                    name={name as keyof Product}
+                    name={name as keyof z.infer<typeof formSchema>}
                     render={({ field }) => (
                       <FormItem className={type === "file" ? "hidden" : ""}>
                         <FormLabel>{label}</FormLabel>
