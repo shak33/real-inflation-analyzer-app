@@ -1,21 +1,24 @@
 import { NextResponse } from "next/server";
 
-import { getUsers } from "@/actions/getUsers";
+import { getUsers } from "@/actions/users/getUsers";
+
+interface GetParams {
+  id?: string;
+}
 
 export async function GET(
   request: Request,
-  context: {
-    params: {
-      id: string;
-    };
-  }
+  { params }: { params: GetParams },
 ) {
-  const users = await getUsers({
-    id: undefined,
-  });
+  const {
+    data,
+    message,
+    status,
+  } = await getUsers({});
 
   return NextResponse.json({
-    status: 200,
-    data: users,
+    status,
+    data,
+    message,
   })
 }

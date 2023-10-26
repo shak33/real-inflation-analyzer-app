@@ -23,7 +23,11 @@ export async function getProducts({
         },
       });
 
-      return product;
+      return {
+        data: product,
+        message: "",
+        status: 200,
+      };
     }
 
     const products = await prisma.product.findMany({
@@ -36,8 +40,16 @@ export async function getProducts({
       }
     });
 
-    return products;
+    return {
+      data: products,
+      message: "",
+      status: 200,
+    };
   } catch (error: any) {
-    return [];
+    return {
+      data: null,
+      message: error.message,
+      status: 500,
+    };
   }
 }

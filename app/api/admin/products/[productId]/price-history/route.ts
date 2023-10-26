@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import prisma from "@/libs/prismadb";
+import { createPriceHistory } from "@/actions/products/priceHistory/createPriceHistory";
 
 interface PostParams {
   productId: string;
@@ -10,23 +10,20 @@ export async function POST(
   request: Request,
   { params }: { params : PostParams },
 ) {
-  try {
-    const { productId } = params;
-    const { price, priceWithDiscount, date, receiptImage } = await request.json();
+  const { productId } = params;
+  const data = await request.json();
+  const {
+    message,
+    status,
+  } = await createPriceHistory({
+    data: {
+      ...data,
+      productId,
+    },
+  });
 
-    await prisma.productPriceHistory.create({
-      data: {
-        productId,
-        price,
-        priceWithDiscount,
-        date,
-        receiptImage,
-      },
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      status: 500,
-      message: error.message,
-    });
-  }
+  return NextResponse.json({
+    message,
+    status,
+  });
 }

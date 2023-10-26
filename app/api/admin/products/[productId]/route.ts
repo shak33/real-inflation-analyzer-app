@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import prisma from "@/libs/prismadb";
+import { deleteProduct } from "@/actions/products/deleteProduct";
+import { patchProduct } from "@/actions/products/patchProduct";
 
 interface DeleteParams {
   productId: string;
@@ -14,67 +15,39 @@ export async function DELETE(
   request: Request,
   { params } : { params: DeleteParams },
 ) {
-  try {
-    const { productId } = params;
+  const { productId } = params;
+  const {
+    message,
+    status,
+  } = await deleteProduct({
+    productId: productId,
+  });
 
-    const product = await prisma.product.findUnique({
-      where: {
-        id: productId,
-      },
-    });
-
-    await prisma.productPriceHistory.deleteMany({
-      where: {
-        productId,
-      },
-    });
-
-    await prisma.product.delete({
-      where: {
-        id: productId,
-      },
-    });
-
-    return NextResponse.json({
-      status: 200,
-      message: `Product ${product?.shortName} deleted successfully`,
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      status: 500,
-      message: error.message,
-    });
-  }
+  return NextResponse.json({
+    message,
+    status,
+  });
 }
 
 export async function PATCH(
   request: Request,
   { params } : { params : PatchParams},
 ) {
-  try {
-    const { productId } = params;
-    const { shortName, name, companyId, barcode } = await request.json();
+  const { productId } = params;
+  const data = await request.json();
 
-    await prisma.product.update({
-      where: {
-        id: productId,
-      },
-      data: {
-        shortName,
-        name,
-        companyId,
-        barcode,
-      },
-    });
+  const {
+    message,
+    status,
+  } = await patchProduct({
+    data: {
+      ...data,
+      productId,
+    },
+  });
 
-    return NextResponse.json({
-      status: 200,
-      message: `Product ${name} updated successfully`,
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      status: 500,
-      message: error.message,
-    });
-  }
+  return NextResponse.json({
+    message,
+    status,
+  });
 }

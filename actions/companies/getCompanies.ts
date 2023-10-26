@@ -1,10 +1,12 @@
 import prisma from '@/libs/prismadb';
 
+interface GetCompaniesParams {
+  id?: string;
+}
+
 export async function getCompanies({
   id,
-}: {
-  id?: string;
-}) {
+} : GetCompaniesParams) {
   try {
     if (id) {
       const company = await prisma.company.findUnique({
@@ -16,7 +18,11 @@ export async function getCompanies({
         }
       });
 
-      return company;
+      return {
+        data: company,
+        message: "",
+        status: 200,
+      };
     }
 
     const companies = await prisma.company.findMany({
@@ -33,8 +39,16 @@ export async function getCompanies({
       products: company.products.length,
     }));
 
-    return companiesWithProducts;
+    return {
+      data: companiesWithProducts,
+      message: "",
+      status: 200,
+    };
   } catch (error: any) {
-    return [];
+    return {
+      data: null,
+      message: error.message,
+      status: 500,
+    }
   }
 }

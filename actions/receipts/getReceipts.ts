@@ -2,15 +2,17 @@ import prisma from "@/libs/prismadb";
 
 import { getDateRange } from "@/utils/getDateRange";
 
+interface GetReceiptsParams {
+  date?: Date;
+}
+
 export async function getReceipts({
   date,
-} : {
-  date: Date;
-}) {
+} : GetReceiptsParams) {
   try {
-    const { startDate, endDate } = getDateRange(date);
-
     if (date) {
+      const { startDate, endDate } = getDateRange(date);
+      
       const receipts = await prisma.product.findMany({
         where: {
           priceHistory: {
@@ -34,12 +36,20 @@ export async function getReceipts({
         },
       });
 
-      return receipts.map((receipt) => {
-        const actualReceipts = receipt.priceHistory.map((priceHistory) => priceHistory.receiptImage);
-        return actualReceipts;
-      });
+      return {
+        data: receipts.map((receipt) => {
+          const actualReceipts = receipt.priceHistory.map((priceHistory) => priceHistory.receiptImage);
+          return actualReceipts;
+        }),
+        message: "",
+        status: 200,
+      }
     }
   } catch (error: any) {
-    return [];
+    return {
+      data: null,
+      message: error.message,
+      status: 500,
+    };
   }
 }

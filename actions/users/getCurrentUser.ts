@@ -22,11 +22,23 @@ export async function getCurrentUser() {
     });
 
     if (!user) {
-      return null;
+      return {
+        data: null,
+        message: "User not found",
+        status: 404,
+      };
     }
 
-    return user;
+    return {
+      data: user,
+      message: "",
+      status: 200,
+    };
   } catch (error: any) {
-    return null;
+    return {
+      data: null,
+      message: error.message,
+      status: 500,
+    };
   }
 }

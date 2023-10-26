@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getReceipts } from "@/actions/getReceipts";
+import { getReceipts } from "@/actions/receipts/getReceipts";
 
 export async function GET(
   request: Request,

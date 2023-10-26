@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
 
-import { getCompanies } from "@/actions/getCompanies";
+import { getCompanies } from "@/actions/companies/getCompanies";
 
-export async function GET(request: Request, context: { params: { id: string } }) {
-  const companies = await getCompanies({
-    id: undefined,
-  });
+interface GetParams {
+  id?: string;
+}
+
+export async function GET(
+  request: Request,
+  { params } : { params: GetParams },
+ ) {
+  const {
+    data,
+    message,
+    status,
+  } = await getCompanies({});
 
   return NextResponse.json({
-    status: 200,
-    data: companies,
+    data,
+    message,
+    status,
   });
 }

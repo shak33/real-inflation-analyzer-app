@@ -1,42 +1,18 @@
 import { NextResponse } from "next/server";
 
-import prisma from "@/libs/prismadb";
+import { createProduct } from "@/actions/products/createProduct";
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const {
-      shortName, name, price, priceWithDiscount, barcode, companyId,
-      receiptImage, date,
-    } = body;
+export async function POST(
+  request: Request,
+) {
+  const body = await request.json();
+  const {
+    message,
+    status,
+  } = await createProduct(body);
 
-    const product = await prisma.product.create({
-      data: {
-        shortName,
-        name,
-        barcode,
-        companyId,
-      },
-    });
-
-    await prisma.productPriceHistory.create({
-      data: {
-        productId: product.id,
-        price,
-        priceWithDiscount,
-        receiptImage,
-        date,
-      },
-    });
-
-    return NextResponse.json({
-      status: 200,
-      message: "Product created successfully",
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      status: 500,
-      message: error.message,
-    });
-  }
+  return NextResponse.json({
+    message,
+    status,
+  });
 }

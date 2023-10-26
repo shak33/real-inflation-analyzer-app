@@ -14,8 +14,15 @@ export async function getUsers({
       },
     });
 
-    return users;
+    return {
+      status: 200,
+      data: users,
+    }
   } catch (error: any) {
-    return [];
+    return {
+      status: 500,
+      data: null,
+      message: error.message,
+    };
   }
 }

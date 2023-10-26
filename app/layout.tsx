@@ -8,7 +8,7 @@ import ReactQueryProvider from '../providers/ReactQueryProvider';
 
 import { Navbar } from '@/components/Navbar';
 
-import { getCurrentUser } from '@/actions/getCurrentUser';
+import { getCurrentUser } from '@/actions/users/getCurrentUser';
 
 import { RegisterModal } from '@/components/modals/RegisterModal';
 import { LoginModal } from '@/components/modals/LoginModal';

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import prisma from "@/libs/prismadb";
+import { deletePriceHistory } from "@/actions/products/priceHistory/deletePriceHistory";
+import { patchPriceHistory } from "@/actions/products/priceHistory/patchPriceHistory";
 
 interface DeleteParams {
   priceHistoryId: string;
@@ -11,58 +12,40 @@ interface PatchParams {
 }
 
 export async function DELETE(
-  request: Request,
   { params } : { params : DeleteParams },
 ) {
-  try {
-    const { priceHistoryId } = params;
+  const { priceHistoryId } = params;
+  const {
+    message,
+    status,
+  } = await deletePriceHistory({
+    priceHistoryId: priceHistoryId,
+  });
 
-    await prisma.productPriceHistory.delete({
-      where: {
-        id: priceHistoryId,
-      },
-    });
-
-    return NextResponse.json({
-      status: 200,
-      message: `Price history deleted successfully`,
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      status: 500,
-      message: error.message,
-    });
-  }
+  return NextResponse.json({
+    message,
+    status,
+  });
 }
 
 export async function PATCH(
   request: Request,
   { params } : { params : PatchParams},
 ) {
-  try {
-    const { priceHistoryId } = params;
-    const { price, priceWithDiscount, date, receiptImage } = await request.json();
+  const { priceHistoryId } = params;
+  const data = await request.json();
+  const {
+    message,
+    status,
+  } = await patchPriceHistory({
+    data: {
+      ...data,
+      priceHistoryId,
+    },
+  });
 
-    await prisma.productPriceHistory.update({
-      where: {
-        id: priceHistoryId,
-      },
-      data: {
-        price,
-        priceWithDiscount,
-        date,
-        receiptImage,
-      },
-    });
-
-    return NextResponse.json({
-      status: 200,
-      message: `Price history updated successfully`,
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      status: 500,
-      message: error.message,
-    });
-  }
+  return NextResponse.json({
+    message,
+    status,
+  });
 }
