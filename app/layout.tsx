@@ -23,14 +23,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const currentUser = await getCurrentUser();
+  const response = await getCurrentUser();
 
   return (
     <ReactQueryProvider>
       <html lang="en">
         <body className={inter.className}>
           <Navbar
-            currentUser={currentUser}
+            currentUser={response?.data}
           />
           <div className="flex flex-row flex-wrap w-full m-auto max-w-[1168px] p-8">
             {children}
