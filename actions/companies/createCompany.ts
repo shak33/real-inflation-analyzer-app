@@ -16,6 +16,13 @@ export async function createCompany({
       name,
     } = data;
 
+    if (!name) {
+      return {
+        message: "Company name is required",
+        status: 403,
+      };
+    }
+
     await prisma.company.create({
       data: {
         logo,
