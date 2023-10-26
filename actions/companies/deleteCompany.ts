@@ -8,6 +8,13 @@ export async function deleteCompany({
   companyId,
 } : DeleteCompanyParams) {
   try {
+    if (!companyId) {
+      return {
+        message: "Company id is required",
+        status: 403,
+      };
+    }
+
     await prisma.company.delete({
       where: {
         id: companyId,
