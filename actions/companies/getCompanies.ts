@@ -19,7 +19,10 @@ export async function getCompanies({
       });
 
       return {
-        data: company,
+        data: {
+          ...company,
+          products: company?.products.length,
+        },
         message: "",
         status: 200,
       };
