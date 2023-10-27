@@ -23,7 +23,6 @@ export function useProducts({
   const data = useQuery({
     queryKey,
     queryFn: () => (id ? fetchProductById(id) : fetchAllProducts()),
-    refetchOnWindowFocus: false,
   });
 
   return data;
