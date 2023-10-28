@@ -5,12 +5,12 @@ interface UseProductsProps {
   id?: string;
 }
 
-async function fetchProductById(id: string) {
+export async function fetchProductById(id: string) {
   const { data } = await axios.get(`/api/products/${id}`);
   return data.data;
 }
 
-async function fetchAllProducts() {
+export async function fetchAllProducts() {
   const { data } = await axios.get('/api/products');
   return data.data;
 }
