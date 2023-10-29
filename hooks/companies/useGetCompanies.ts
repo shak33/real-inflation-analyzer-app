@@ -13,7 +13,7 @@ export function useCompanies() {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "Please try again later.",
+          description: "Please try fetching companies later.",
         });
       }
 

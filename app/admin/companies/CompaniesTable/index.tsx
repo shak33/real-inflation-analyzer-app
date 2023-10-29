@@ -41,11 +41,11 @@ export const CompaniesTable = () => {
   }, [companies.data]);
 
   if (removeCompany.isLoading) {
-    return <div>Removing company. Please wait...</div>;
+    return <div>Removing company, please wait...</div>;
   }
 
   if (companies.isLoading) {
-    return <div>Loading</div>;
+    return <div>Loading companies, please wait...</div>;
   }
 
   if (companies.isError) {

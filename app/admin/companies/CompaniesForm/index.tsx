@@ -55,7 +55,7 @@ export const CompaniesForm = () => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col gap-4 w-full"
+        className="flex flex-col gap-4 w-full mb-8"
         onSubmit={form.handleSubmit(onSubmit)}
         data-testid="companies-form"
       >

@@ -23,6 +23,8 @@ export const CustomTable = ({
   onEditClick,
   onRemoveClick,
 } : CustomTableProps) => {
+  const colSpanWidth = tableHead.length + (onEditClick || onRemoveClick ? 1 : 0);
+
   return (
     <Table>
       <TableHeader>
@@ -40,7 +42,16 @@ export const CustomTable = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {tableBody.map((row: any) =>
+        {tableBody.length === 0 ? (
+          <TableRow>
+            <TableCell
+              className="text-center"
+              colSpan={colSpanWidth}
+            >
+              No data found
+            </TableCell>
+          </TableRow>
+        ) : tableBody.map((row: any) =>
           <TableRow key={row.id}>
             {Object.entries(row).map(([key, value]) => key !== "id" ? (
               <TableCell key={`${row.id}-${key}`}>

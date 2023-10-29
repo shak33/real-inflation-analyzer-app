@@ -13,7 +13,7 @@ export function useRemoveCompany() {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "Please try again later.",
+          description: "Please try removing company later.",
         });
       } else {
         toast({
