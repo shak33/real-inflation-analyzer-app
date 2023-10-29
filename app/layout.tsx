@@ -7,6 +7,7 @@ const inter = Nunito({ subsets: ['latin'] })
 import ReactQueryProvider from '../providers/ReactQueryProvider';
 
 import { Navbar } from '@/components/Navbar';
+import { Toaster } from "@/components/ui/toaster"
 
 import { getCurrentUser } from '@/actions/users/getCurrentUser';
 
@@ -37,6 +38,7 @@ export default async function RootLayout({
           </div>
           <RegisterModal />
           <LoginModal />
+          <Toaster />
         </body>
       </html>
     </ReactQueryProvider>

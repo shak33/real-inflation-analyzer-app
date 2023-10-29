@@ -3,7 +3,7 @@ import { Calendar } from "react-date-range";
 
 import { Company } from "@prisma/client";
 
-import { useCompanies } from "@/hooks/useCompanies";
+import { useCompanies } from "@/hooks/useGetCompanies";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -83,9 +83,6 @@ export const RenderProperInput: React.FC<RenderProperInputProps> = ({
       />
     );
   } else {
-    return <Input
-      placeholder=""
-      {...field}
-    />;
+    return <Input placeholder="" {...field} />;
   }
 };

@@ -1,63 +1,56 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useCallback, useMemo } from "react";
 
 import Image from "next/image";
 
-import { Button } from "@/components/ui/button";
+import { CustomTable } from "@/components/Table";
 
-import { CustomTable } from "@/components/Table"
-
-import { useCompanies } from "@/hooks/useCompanies";
+import { useCompanies } from "@/hooks/companies/useGetCompanies";
+import { useRemoveCompany } from "@/hooks/companies/useRemoveCompany";
 
 import { CompaniesTableCompany } from "@/interfaces/CompaniesTableCompany";
 
 export const CompaniesTable = () => {
-  const queryClient = useQueryClient();
   const companies = useCompanies();
+  const removeCompany = useRemoveCompany();
 
-  const removeMutation = useMutation({
-    mutationFn: (id: string) => {
-      return axios.delete(`/api/admin/companies/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["companies"],
-      });
-    },
-  });
+  const onRemoveClick = useCallback((id: string) => {
+    removeCompany.mutate(id);
+  },[removeCompany]);
 
-  if (companies.isLoading) {
-    return <div>Loading</div>
-  }
+  const tableHead = ["Name", "Number of products", "Logo"];
 
-  if (removeMutation.isLoading) {
+  const tableBody = useMemo(() => {
+    return (
+      companies?.data?.map(
+        ({ name, products, logo }: CompaniesTableCompany) => ({
+          name,
+          products,
+          logo: (
+            <Image
+              alt={`Logo of ${name}`}
+              src={logo || ""}
+              width={150}
+              height={50}
+            />
+          ),
+        }),
+      ) || []
+    );
+  }, [companies.data]);
+
+  if (removeCompany.isLoading) {
     return <div>Removing company. Please wait...</div>;
   }
 
-  const onRemoveClick = (id: string) => {
-    removeMutation.mutate(id);
+  if (companies.isLoading) {
+    return <div>Loading</div>;
   }
 
-  const tableHead = [
-    "Name",
-    "Number of products",
-    "Logo",
-  ];
-
-  const tableBody = companies.data.map(({id, name, products, logo}: CompaniesTableCompany) => ({
-    name,
-    products,
-    logo: (
-      <Image
-        alt={`Logo of ${name}`}
-        src={logo || ''}
-        width={150}
-        height={50}
-      />
-    ),
-  }));
+  if (companies.isError) {
+    return;
+  }
 
   return (
     <CustomTable
@@ -65,5 +58,5 @@ export const CompaniesTable = () => {
       tableBody={tableBody}
       onRemoveClick={onRemoveClick}
     />
-  )
-} 
+  );
+};

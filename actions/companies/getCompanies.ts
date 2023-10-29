@@ -48,7 +48,7 @@ export async function getCompanies({
       status: 200,
     };
   } catch (error: any) {
-    return {
+    return{
       data: null,
       message: error.message,
       status: 500,
