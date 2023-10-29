@@ -1,19 +1,18 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
 import { CustomTable } from "@/components/Table";
 
-import { useProducts } from "@/hooks/useProducts";
+import { useGetProducts } from "@/hooks/products/useGetProducts";
+import { useRemoveProduct } from "@/hooks/products/useRemoveProduct";
 
 import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 
 export const ProductsTable = () => {
-  const queryClient = useQueryClient();
-  const products = useProducts({});
+  const products = useGetProducts({});
+  const removeProduct = useRemoveProduct();
   const router = useRouter();
 
   const tableHead = [
@@ -25,41 +24,40 @@ export const ProductsTable = () => {
     "Price with discount",
   ];
 
-  const tableBody = products?.data?.map(({id, shortName, name, company, barcode, date, priceHistory}: ProductsTableProduct) => ({
-    id,
-    shortName,
-    name,
-    company: company?.name,
-    barcode,
-    price: priceHistory.at(-1)?.price,
-    priceWithDiscount: priceHistory.at(-1)?.priceWithDiscount ? 'Yes' : 'No',
-  }));
-
-  const removeMutation = useMutation({
-    mutationFn: (id: string) => {
-      return axios.delete(`/api/admin/products/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-      });
-    },
-  });
+  const tableBody = useMemo(() => {
+    return products?.data?.map(({
+      id,
+      shortName,
+      name,
+      company,
+      barcode,
+      date,
+      priceHistory,
+    } : ProductsTableProduct) => ({
+      id,
+      shortName,
+      name,
+      company: company?.name,
+      barcode,
+      price: priceHistory.at(-1)?.price,
+      priceWithDiscount: priceHistory.at(-1)?.priceWithDiscount ? "Yes" : "No",
+    })) || [];
+  }, [products.data]);
 
   const onEditClick = useCallback((id: string) => {
     router.push(`/admin/products/${id}`);
   }, [router]);
 
   const onRemoveClick = useCallback((id: string) => {
-    removeMutation.mutate(id);
-  }, [removeMutation]);
-  
+    removeProduct.mutate(id);
+  }, [removeProduct]);
+
   if (products.isLoading) {
-    return <div>Loading</div>
+    return <div>Loading products, please wait...</div>;
   }
 
-  if (removeMutation.isLoading) {
-    return <div>Removing product. Please wait...</div>;
+  if (removeProduct.isLoading) {
+    return <div>Removing product, please wait...</div>;
   }
 
   return (
@@ -69,5 +67,5 @@ export const ProductsTable = () => {
       onEditClick={onEditClick}
       onRemoveClick={onRemoveClick}
     />
-  )
-} 
+  );
+};
