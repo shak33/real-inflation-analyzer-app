@@ -6,13 +6,13 @@ import Image from "next/image";
 
 import { CustomTable } from "@/components/Table";
 
-import { useCompanies } from "@/hooks/companies/useGetCompanies";
+import { useGetCompanies } from "@/hooks/companies/useGetCompanies";
 import { useRemoveCompany } from "@/hooks/companies/useRemoveCompany";
 
 import { CompaniesTableCompany } from "@/interfaces/CompaniesTableCompany";
 
 export const CompaniesTable = () => {
-  const companies = useCompanies();
+  const companies = useGetCompanies();
   const removeCompany = useRemoveCompany();
 
   const onRemoveClick = useCallback((id: string) => {

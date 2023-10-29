@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useToast } from "@/hooks/utils/useToast";
 
-export function useCompanies() {
+export function useGetCompanies() {
   const { toast } = useToast();
   const companies = useQuery({
     queryKey: ["companies"],

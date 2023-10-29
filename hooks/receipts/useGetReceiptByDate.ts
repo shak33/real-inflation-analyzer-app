@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 
 interface ReceiptFromDateState {
@@ -7,7 +7,7 @@ interface ReceiptFromDateState {
   updatedReceipts: (date: Date) => Promise<void>;
 }
 
-export const useReceiptFromDate = create<ReceiptFromDateState>((set) => ({
+export const useGetReceiptFromDate = create<ReceiptFromDateState>((set) => ({
   receipts: [],
   updatedReceipts: async (date: Date) => {
     const receipts = await axios.get(`/api/admin/receipts/${date}`);

@@ -3,7 +3,7 @@ import { Calendar } from "react-date-range";
 
 import { Company } from "@prisma/client";
 
-import { useCompanies } from "@/hooks/useGetCompanies";
+import { useGetCompanies } from "@/hooks/companies/useGetCompanies";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,7 @@ export const RenderProperInput: React.FC<RenderProperInputProps> = ({
   name,
   type,
 }) => {
-  const companies = useCompanies();
+  const companies = useGetCompanies();
 
   const onDateChange = (field: any, date: Date) => {
     field.onChange(date);
