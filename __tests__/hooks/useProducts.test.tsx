@@ -5,7 +5,7 @@ import {
   fetchAllProducts,
 } from "@/hooks/products/useGetProducts";
 
-jest.mock("../../hooks/useProducts", () => ({
+jest.mock("../../hooks/products/useGetProducts", () => ({
   fetchProductById: jest.fn(),
   fetchAllProducts: jest.fn(),
 }));

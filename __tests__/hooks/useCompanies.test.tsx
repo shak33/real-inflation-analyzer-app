@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
-import { useCompanies } from "@/hooks/useGetCompanies";
+import { useGetCompanies } from "@/hooks/companies/useGetCompanies";
 
 jest.mock("axios");
 
@@ -14,7 +14,7 @@ describe("useCompanies", () => {
     ];
     (axios.get as jest.Mock).mockResolvedValueOnce({ data: { data } });
 
-    const { result } = renderHook(() => useCompanies(), { wrapper });
+    const { result } = renderHook(() => useGetCompanies(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -27,7 +27,7 @@ describe("useCompanies", () => {
     const error = new Error("Failed to fetch companies");
     (axios.get as jest.Mock).mockRejectedValueOnce(() => Promise.reject(error));
 
-    const { result } = renderHook(() => useCompanies(), { wrapper });
+    const { result } = renderHook(() => useGetCompanies(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
