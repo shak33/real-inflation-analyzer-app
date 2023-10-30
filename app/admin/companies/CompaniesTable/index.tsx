@@ -48,10 +48,6 @@ export const CompaniesTable = () => {
     return <div>Loading companies, please wait...</div>;
   }
 
-  if (companies.isError) {
-    return;
-  }
-
   return (
     <CustomTable
       tableHead={tableHead}
