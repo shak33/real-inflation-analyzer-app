@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AcceptanceStatus {
+  ACCEPTED
+  PENDING
+  REJECTED
+}
+
 model Product {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   name       String?
@@ -21,6 +27,7 @@ model Product {
   company    Company? @relation(fields: [companyId], references: [id])
   priceHistory ProductPriceHistory[]
   createdById String? @db.ObjectId
+  status AcceptanceStatus @default(PENDING)
   user User? @relation(fields: [createdById], references: [id])
 }
 
@@ -32,6 +39,7 @@ model ProductPriceHistory {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   productId String @db.ObjectId
+  status AcceptanceStatus @default(PENDING)
   product Product @relation(fields: [productId], references: [id])
   receiptImage String?
   createdById String? @db.ObjectId
