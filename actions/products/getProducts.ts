@@ -2,10 +2,12 @@ import prisma from '@/libs/prismadb';
 
 interface GetProductProps {
   id?: string;
+  searchQuery?: string;
 }
 
 export async function getProducts({
   id,
+  searchQuery,
 } : GetProductProps) {
   try {
     if (id) {
@@ -31,6 +33,22 @@ export async function getProducts({
     }
 
     const products = await prisma.product.findMany({
+      where: {
+        OR: [
+          {
+            shortName: {
+              contains: searchQuery,
+              mode: 'insensitive',
+            },
+          },
+          {
+            name: {
+              contains: searchQuery,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
       include: {
         priceHistory: true,
         company: true,
