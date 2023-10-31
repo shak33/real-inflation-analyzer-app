@@ -1,16 +1,15 @@
 import prisma from "@/libs/prismadb";
 
+import { getCurrentUser } from "@/actions/users/getCurrentUser";
+
 interface CreateCompanyParams {
-  data: {
-    name: string;
-    logo: string;
-  };
+  name: string;
+  logo: string;
 }
 
-export async function createCompany({
-  data,
-} : CreateCompanyParams) {
+export async function createCompany(data : CreateCompanyParams) {
   try {
+    const currentUser = await getCurrentUser();
     const {
       logo,
       name,
@@ -23,10 +22,18 @@ export async function createCompany({
       };
     }
 
+    if (!currentUser?.data?.id) {
+      return {
+        message: "User not found",
+        status: 404,
+      };
+    }
+
     await prisma.company.create({
       data: {
         logo,
         name,
+        createdById: currentUser?.data?.id,
       },
     });
 

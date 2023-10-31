@@ -16,7 +16,9 @@ export const formSchema = z.object({
   priceWithDiscount: z.boolean(),
   barcode: z.string(),
   date: z.date(),
-  companyId: z.string(),
+  companyId: z.string().min(1, {
+    message: "Company must be selected",
+  }),
   receiptImage: z.string(),
 });
 

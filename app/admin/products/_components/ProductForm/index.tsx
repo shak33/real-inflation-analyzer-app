@@ -3,11 +3,10 @@
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,7 +19,11 @@ import {
 } from "@/components/ui/form";
 import { ImageUpload } from "@/components/ImageUpload";
 
+import { useGetReceiptFromDate } from "@/hooks/receipts/useGetReceiptByDate";
+import { useCreateProduct } from "@/hooks/products/useCreateProduct";
+
 import { RenderProperInput } from "@/components/RenderProperInput";
+import { UploadedReceipts } from "@/app/admin/products/_components/UploadedReceipts";
 
 import {
   formSchema,
@@ -29,7 +32,7 @@ import {
 } from "./constants";
 
 export const ProductForm = () => {
-  const queryClient = useQueryClient();
+  const { receipts, updateReceipts } = useGetReceiptFromDate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,25 +46,23 @@ export const ProductForm = () => {
       receiptImage: "",
     },
   });
-
-  const mutation = useMutation({
-    mutationFn: (postData: z.infer<typeof formSchema>) => {
-      return axios.post("/api/admin/products", postData);
-    },
-    onSuccess: () => {
-      form.reset();
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-      });
-    },
-  });
+  const createProduct = useCreateProduct(form);
+  const date = form.watch("date");
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutation.mutate(values);
+    createProduct.mutate(values);
   };
 
-  if (mutation.isLoading) {
-    return <div>Adding product to the system. Please wait...</div>;
+  const removeReceipt = () => {
+    form.setValue("receiptImage", "");
+  }
+
+  useEffect(() => {
+    updateReceipts(date);
+  }, [date, updateReceipts]);
+
+  if (createProduct.isLoading) {
+    return <div>Adding product to the system, please wait...</div>;
   }
 
   return (
@@ -129,12 +130,34 @@ export const ProductForm = () => {
                 );
               },
             )}
+            <p>Upload a photo of the receipt</p>
             <ImageUpload
               onChange={(value) => {
                 form.setValue("receiptImage", value);
               }}
               value={form.watch("receiptImage")}
             />
+            {form.getValues("receiptImage") ? (
+              <Button
+                variant="destructive"
+                className="w-full mt-2"
+                onClick={removeReceipt}
+              >
+                Remove receipt photo
+              </Button>
+            ) : null}
+            {receipts?.length > 0 ? (
+              <>
+                <p>or choose one of the receipts you&apos;ve uploaded matching selected date</p>
+                <UploadedReceipts
+                  receipts={receipts}
+                  onChange={(value) => {
+                    form.setValue("receiptImage", value);
+                  }}
+                  value={form.watch("receiptImage")}
+                />
+              </>
+            ) : null}
           </div>
         </div>
       </form>
