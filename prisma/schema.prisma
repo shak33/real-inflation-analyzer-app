@@ -23,12 +23,12 @@ model Product {
   updatedAt  DateTime @updatedAt
   shortName  String
   barcode   String?
-  companyId String? @db.ObjectId
-  company    Company? @relation(fields: [companyId], references: [id])
+  companyId String @db.ObjectId
+  company    Company @relation(fields: [companyId], references: [id])
   priceHistory ProductPriceHistory[]
-  createdById String? @db.ObjectId
+  createdById String @db.ObjectId
   status AcceptanceStatus @default(PENDING)
-  user User? @relation(fields: [createdById], references: [id])
+  user User @relation(fields: [createdById], references: [id])
 }
 
 model ProductPriceHistory {
@@ -42,8 +42,8 @@ model ProductPriceHistory {
   status AcceptanceStatus @default(PENDING)
   product Product @relation(fields: [productId], references: [id])
   receiptImage String?
-  createdById String? @db.ObjectId
-  user User? @relation(fields: [createdById], references: [id])
+  createdById String @db.ObjectId
+  user User @relation(fields: [createdById], references: [id])
 }
 
 model Company {
@@ -54,8 +54,8 @@ model Company {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
-  createdById String? @db.ObjectId
-  user User? @relation(fields: [createdById], references: [id])
+  createdById String @db.ObjectId
+  user User @relation(fields: [createdById], references: [id])
 }
 
 enum Role {
