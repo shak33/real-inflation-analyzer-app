@@ -12,6 +12,7 @@ import { ProductPriceHistory } from "@prisma/client";
 import { useAddEditProductHistoryModal } from "@/hooks/useAddEditProductHistoryModal";
 import { useRemovePriceHistory } from "@/hooks/products/priceHistory/useRemovePriceHistory";
 import { useAddPriceHistory } from "@/hooks/products/priceHistory/useAddPriceHistory";
+import { useEditPriceHistory } from "@/hooks/products/priceHistory/useEditPriceHistory";
 
 import { formSchema } from "@/components/modals/AddEditProductHistoryModal/constants";
 
@@ -26,6 +27,7 @@ export const PriceHistoryTable = ({
 } : PriceHistoryTableProps) => {
   const removePriceHistory = useRemovePriceHistory();
   const addPriceHistory = useAddPriceHistory();
+  const editPriceHistory = useEditPriceHistory();
   const addEditProductHistoryModal = useAddEditProductHistoryModal();
   const tableHead = ['Price', 'Price with discount', 'Date', 'Receipt'];
 
@@ -58,9 +60,14 @@ export const PriceHistoryTable = ({
   }, [addEditProductHistoryModal]);
 
   const onAddNewPriceHistorySave = useCallback((postData: z.infer<typeof formSchema>) => {
-    addPriceHistory.mutate({productId, postData});
+    if (addEditProductHistoryModal.editedId) {
+      editPriceHistory.mutate({productId, priceHistoryId: addEditProductHistoryModal.editedId, postData});
+    } else {
+      addPriceHistory.mutate({productId, postData});
+    }
+
     addEditProductHistoryModal.closeModal();
-  }, [addPriceHistory, productId, addEditProductHistoryModal]);
+  }, [addPriceHistory, editPriceHistory, productId, addEditProductHistoryModal]);
 
   return (
     <>

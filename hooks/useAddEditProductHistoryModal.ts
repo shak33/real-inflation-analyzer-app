@@ -12,6 +12,6 @@ export const useAddEditProductHistoryModal = create<EditProductHistoryModalState
   editedId: "",
   isOpen: false,
   openModal: () => set({ isOpen: true }),
-  closeModal: () => set({ isOpen: false }),
+  closeModal: () => set({ isOpen: false, editedId: "" }),
   setEditedRow: (id) => set({ editedId: id }),
 }));

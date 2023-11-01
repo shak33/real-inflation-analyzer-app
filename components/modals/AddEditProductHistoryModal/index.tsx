@@ -52,84 +52,82 @@ export const AddEditProductHistoryModal:React.FC<EditProductHistoryModalProps> =
   };
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
-      <Form {...form}>
-        <form
-          className="flex flex-col gap-4 w-full mb-24"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          {formStructure.map(({ name, label, type, description }, index) => {
-            return (
-              <FormField
-                control={form.control}
-                key={`${name}-${index}`}
-                name={name as keyof z.infer<typeof formSchema>}
-                render={({ field }) => (
-                  <FormItem
-                    className={type === "file" ? "hidden" : ""}
-                  >
-                    <FormLabel>{label}</FormLabel>
-                    <FormControl>
-                      <RenderProperInput
-                        field={field}
-                        form={form}
-                        name={name}
-                        type={type}
-                      />
-                    </FormControl>
-                    <FormDescription>{description}</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            );
-          })}
-          <div className="flex gap-4">
-            {form.watch("receiptImage") ? <div className="basis-1/2">
-              <Image
-                src={form.watch("receiptImage")}
-                width={200}
-                height={200}
-                alt="Receipt image"
-              />
-              <Button
-                variant="destructive"
-                onClick={removeReceiptImage}
-              >
-                Remove receipt image
-              </Button>
-            </div> : null}
+    <Form {...form}>
+      <form
+        className="flex flex-col gap-4 w-full"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        {formStructure.map(({ name, label, type, description }, index) => {
+          return (
             <FormField
               control={form.control}
-              name="receiptImage"
-              render={() => (
+              key={`${name}-${index}`}
+              name={name as keyof z.infer<typeof formSchema>}
+              render={({ field }) => (
                 <FormItem
-                  className="basis-1/2"
+                  className={type === "file" ? "hidden" : ""}
                 >
-                  <FormLabel>Receipt image</FormLabel>
+                  <FormLabel>{label}</FormLabel>
                   <FormControl>
-                    <ImageUpload
-                      onChange={(value) => {
-                        form.setValue("receiptImage", value);
-                      }}
-                      value={form.watch("receiptImage")}
+                    <RenderProperInput
+                      field={field}
+                      form={form}
+                      name={name}
+                      type={type}
                     />
                   </FormControl>
+                  <FormDescription>{description}</FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          <hr />
-          <div className="flex flex-col gap-4 mt-3">
+          );
+        })}
+        <div className="flex gap-4">
+          {form.watch("receiptImage") ? <div className="basis-1/2">
+            <Image
+              src={form.watch("receiptImage")}
+              width={200}
+              height={200}
+              alt="Receipt image"
+            />
             <Button
-              type="submit"
+              variant="destructive"
+              onClick={removeReceiptImage}
             >
-              Add new price history
+              Remove receipt image
             </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+          </div> : null}
+          <FormField
+            control={form.control}
+            name="receiptImage"
+            render={() => (
+              <FormItem
+                className="basis-1/2"
+              >
+                <FormLabel>Receipt image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    onChange={(value) => {
+                      form.setValue("receiptImage", value);
+                    }}
+                    value={form.watch("receiptImage")}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+        <hr />
+        <div className="flex flex-col gap-4 mt-3">
+          <Button
+            type="submit"
+          >
+            {data ? "Update price history" : "Add price history"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 
   return (
