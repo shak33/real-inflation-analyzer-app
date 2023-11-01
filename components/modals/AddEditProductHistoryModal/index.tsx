@@ -12,23 +12,30 @@ import { RenderProperInput } from "@/components/RenderProperInput";
 import { ImageUpload } from "@/components/ImageUpload";
 import { Button } from "@/components/ui/button";
 
-import { useEditProductHistoryModal } from "@/hooks/useEditProductHistoryModal";
+import { useAddEditProductHistoryModal } from "@/hooks/useAddEditProductHistoryModal";
 
 import { ProductPriceHistory } from "@prisma/client";
 import { formSchema, formStructure } from "./constants";
 
 interface EditProductHistoryModalProps {
-  data: ProductPriceHistory;
+  data?: ProductPriceHistory;
+  onSave: (values: z.infer<typeof formSchema>) => void;
 }
 
-export const EditProductHistoryModal:React.FC<EditProductHistoryModalProps> = ({
+export const AddEditProductHistoryModal:React.FC<EditProductHistoryModalProps> = ({
   data,
+  onSave
 }) => {
-  const editProductHistoryModal = useEditProductHistoryModal();
+  const addEditProductHistoryModal = useAddEditProductHistoryModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: !data ? {
+      price: 0,
+      priceWithDiscount: false,
+      date: new Date(),
+      receiptImage: '',
+      } : {
       price: data.price,
       priceWithDiscount: data.priceWithDiscount,
       date: new Date(data.date),
@@ -40,9 +47,16 @@ export const EditProductHistoryModal:React.FC<EditProductHistoryModalProps> = ({
     form.setValue("receiptImage", "");
   };
 
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    onSave(values);
+  };
+
   const bodyContent = (
-    <div className="flex flex-col gap-4">
-      <Form {...form}>
+    <Form {...form}>
+      <form
+        className="flex flex-col gap-4 w-full"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         {formStructure.map(({ name, label, type, description }, index) => {
           return (
             <FormField
@@ -104,23 +118,24 @@ export const EditProductHistoryModal:React.FC<EditProductHistoryModalProps> = ({
             )}
           />
         </div>
-      </Form>
-    </div>
-  );
-
-  const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
-
-    </div>
+        <hr />
+        <div className="flex flex-col gap-4 mt-3">
+          <Button
+            type="submit"
+          >
+            {data ? "Update price history" : "Add price history"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 
   return (
     <Modal
-      isOpen={editProductHistoryModal.isOpen}
-      title="Edit product history"
-      onClose={editProductHistoryModal.closeModal}
+      isOpen={addEditProductHistoryModal.isOpen}
+      title={!data ? "Add price history" : "Edit product history"}
+      onClose={addEditProductHistoryModal.closeModal}
       body={bodyContent}
-      footer={footerContent}
     />
   )
 }

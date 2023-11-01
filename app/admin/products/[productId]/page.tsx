@@ -1,6 +1,6 @@
 "use client";
 
-import { useProducts } from "@/hooks/products/useGetProducts";
+import { useGetProducts } from "@/hooks/products/useGetProducts";
 
 interface EditProductPageProps {
   productId: string;
@@ -14,7 +14,7 @@ export default function EditProductPage({
 }: {
   params: EditProductPageProps;
 }) {
-  const product = useProducts({
+  const product = useGetProducts({
     id: params.productId,
   });
 
@@ -26,7 +26,10 @@ export default function EditProductPage({
     <>
       <h1 className="mb-8">Edit product</h1>
       <EditProductForm data={product} />
-      <PriceHistoryTable data={product.data.priceHistory} />
+      <PriceHistoryTable
+        data={product.data.priceHistory}
+        productId={params.productId}
+      />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/utils/useToast';
 
 interface UseProductsProps {
   id?: string;
+  searchQuery?: string;
 }
 
 export async function fetchProductById(id: string, toast: any) {
@@ -20,8 +21,8 @@ export async function fetchProductById(id: string, toast: any) {
   return data.data;
 }
 
-export async function fetchAllProducts(toast: any) {
-  const { data } = await axios.get('/api/products');
+export async function fetchAllProducts(toast: any, searchQuery = "") {
+  const { data } = await axios.get('/api/products?searchQuery=' + searchQuery);
 
   if (data.status !== 200) {
     toast({
@@ -36,13 +37,14 @@ export async function fetchAllProducts(toast: any) {
 
 export function useGetProducts({
   id,
+  searchQuery,
 } : UseProductsProps) {
   const { toast } = useToast();
-  const queryKey = id ? ['product', id] : ['products'];
+  const queryKey = id ? ['product', id] : ['products', { searchQuery }];
 
   const data = useQuery({
     queryKey,
-    queryFn: () => (id ? fetchProductById(id, toast) : fetchAllProducts(toast)),
+    queryFn: () => (id ? fetchProductById(id, toast) : fetchAllProducts(toast, searchQuery)),
   });
 
   return data;

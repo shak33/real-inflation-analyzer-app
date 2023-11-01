@@ -6,12 +6,17 @@ export async function GET(
   request: Request,
   context: { params : { date: Date } }
 ) {
-  const receipts = await getReceipts({
+  const {
+    data,
+    message,
+    status,
+  } = await getReceipts({
     date: context.params.date,
   });
 
   return NextResponse.json({
-    status: 200,
-    data: receipts,
+    data,
+    message,
+    status,
   });
 }

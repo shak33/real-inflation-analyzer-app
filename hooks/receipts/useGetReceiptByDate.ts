@@ -4,14 +4,14 @@ import axios from "axios";
 
 interface ReceiptFromDateState {
   receipts: string[];
-  updatedReceipts: (date: Date) => Promise<void>;
+  updateReceipts: (date: Date) => Promise<void>;
 }
 
 export const useGetReceiptFromDate = create<ReceiptFromDateState>((set) => ({
   receipts: [],
-  updatedReceipts: async (date: Date) => {
-    const receipts = await axios.get(`/api/admin/receipts/${date}`);
+  updateReceipts: async (date: Date) => {
+    const { data } = await axios.get(`/api/admin/receipts/${date}`);
 
-    set({ receipts: receipts.data.data });
+    set({ receipts: data.data });
   },
 }));

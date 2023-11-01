@@ -1,5 +1,7 @@
 import prisma from "@/libs/prismadb";
 
+import { getCurrentUser } from "@/actions/users/getCurrentUser";
+
 interface CreatePriceHistoryParams {
   data: {
     productId: string;
@@ -13,6 +15,15 @@ interface CreatePriceHistoryParams {
 export async function createPriceHistory({
   data,
 } : CreatePriceHistoryParams) {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser?.data?.id) {
+    return {
+      message: "User not found",
+      status: 404,
+    }
+  }
+
   try {
     const {
       productId,
@@ -29,6 +40,7 @@ export async function createPriceHistory({
         priceWithDiscount,
         date,
         receiptImage,
+        createdById: currentUser?.data?.id,
       },
     });
 

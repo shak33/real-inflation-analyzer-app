@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, ChangeEvent } from "react";
+
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
@@ -7,11 +9,19 @@ import { CustomTable } from "@/components/Table";
 
 import { useGetProducts } from "@/hooks/products/useGetProducts";
 import { useRemoveProduct } from "@/hooks/products/useRemoveProduct";
+import { useDebounce } from "@/hooks/utils/useDebounce";
 
 import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 
 export const ProductsTable = () => {
-  const products = useGetProducts({});
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearchQuery = useDebounce({
+    value: searchQuery,
+    delay: 500,
+  });
+  const products = useGetProducts({
+    searchQuery: debouncedSearchQuery,
+  });
   const removeProduct = useRemoveProduct();
   const router = useRouter();
 
@@ -31,7 +41,6 @@ export const ProductsTable = () => {
       name,
       company,
       barcode,
-      date,
       priceHistory,
     } : ProductsTableProduct) => ({
       id,
@@ -44,6 +53,10 @@ export const ProductsTable = () => {
     })) || [];
   }, [products.data]);
 
+  const onSearchInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  }, []);
+
   const onEditClick = useCallback((id: string) => {
     router.push(`/admin/products/${id}`);
   }, [router]);
@@ -51,10 +64,6 @@ export const ProductsTable = () => {
   const onRemoveClick = useCallback((id: string) => {
     removeProduct.mutate(id);
   }, [removeProduct]);
-
-  if (products.isLoading) {
-    return <div>Loading products, please wait...</div>;
-  }
 
   if (removeProduct.isLoading) {
     return <div>Removing product, please wait...</div>;
@@ -66,6 +75,10 @@ export const ProductsTable = () => {
       tableBody={tableBody}
       onEditClick={onEditClick}
       onRemoveClick={onRemoveClick}
+      searchQuery={searchQuery}
+      onSearchInputChange={onSearchInputChange}
+      isLoading={products.isLoading}
+      loadingText="Loading products, please wait..."
     />
   );
 };
