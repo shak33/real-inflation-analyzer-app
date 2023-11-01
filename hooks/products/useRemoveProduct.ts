@@ -7,7 +7,7 @@ export function useRemoveProduct() {
   const queryClient = useQueryClient();
   const removeProduct = useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await axios.delete(`/api/products/${id}`);
+      const { data } = await axios.delete(`/api/admin/products/${id}`);
 
       if (data.status !== 200) {
         toast({

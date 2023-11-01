@@ -24,7 +24,8 @@ export const CompaniesTable = () => {
   const tableBody = useMemo(() => {
     return (
       companies?.data?.map(
-        ({ name, products, logo }: CompaniesTableCompany) => ({
+        ({ id, name, products, logo }: CompaniesTableCompany) => ({
+          id,
           name,
           products,
           logo: (

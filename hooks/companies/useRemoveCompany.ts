@@ -7,7 +7,7 @@ export function useRemoveCompany() {
   const queryClient = useQueryClient();
   const removeCompany = useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await axios.delete(`/api/companies/${id}`);
+      const { data } = await axios.delete(`/api/admin/companies/${id}`);
 
       if (data.status !== 200) {
         toast({
@@ -22,8 +22,6 @@ export function useRemoveCompany() {
           description: "The company has been removed.",
         });
       }
-
-      return data.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
