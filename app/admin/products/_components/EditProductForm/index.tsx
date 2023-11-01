@@ -6,11 +6,7 @@ import "react-date-range/dist/theme/default.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import axios from "axios";
-import {
-  useMutation,
-  UseQueryResult,
-} from "@tanstack/react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,11 +17,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
-
 import { RenderProperInput } from "@/components/RenderProperInput";
 
+import { usePatchProduct } from "@/hooks/products/usePatchProduct";
+
+import { ProductsTableProduct } from "@/interfaces/ProductsTableProduct";
 import { formSchema, formStructure } from "./constants";
 
 interface EditProductFormProps {
@@ -33,6 +29,7 @@ interface EditProductFormProps {
 }
 
 export const EditProductForm = ({ data }: EditProductFormProps) => {
+  const patchProduct = usePatchProduct();
   const productData = data.data;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,20 +48,17 @@ export const EditProductForm = ({ data }: EditProductFormProps) => {
         },
   });
 
-  const mutation = useMutation({
-    mutationFn: (postData: z.infer<typeof formSchema>) => {
-      return axios.patch(`/api/admin/products/${productData?.id}`, postData);
-    },
-  });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutation.mutate(values);
+  const onSubmit = (postData: z.infer<typeof formSchema>) => {
+    patchProduct.mutate({
+      productId: productData?.id!,
+      postData,
+    });
   };
 
-  if (mutation.isLoading) {
+  if (patchProduct.isLoading) {
     return (
       <div>
-        Updating product {form.getValues("name")} in the system. Please wait...
+        Updating product {form.getValues("name")} in the system, please wait...
       </div>
     );
   }
