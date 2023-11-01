@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-
-import {FieldValues, SubmitHandler, useForm} from 'react-hook-form';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -18,19 +18,22 @@ import { Input } from "@/components/ui/input";
 import { useRegisterModal } from '@/hooks/useRegisterModal';
 import { useLoginModal } from '@/hooks/useLoginModal';
 
+import { formSchema, formStructure } from './constants';
+
 export const LoginModal = () => {
   const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
-  const form = useForm<FieldValues>({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
       password: '',
     }
   });
 
-  const onSubmit: SubmitHandler<FieldValues>  = (data) => {
+  const onSubmit  = (data: z.infer<typeof formSchema>) => {
     signIn('credentials', {
       ...data,
       redirect: false,
@@ -46,23 +49,6 @@ export const LoginModal = () => {
     loginModal.closeModal();
     registerModal.openModal();
   };
-
-  const formStructure = [
-    {
-      name: 'email',
-      label: 'Email',
-      type: 'input',
-      description: '',
-      placeholder: '',
-    },
-    {
-      name: 'password',
-      label: 'Password',
-      type: 'password',
-      description: '',
-      placeholder: '',
-    },
-  ];
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -80,7 +66,7 @@ export const LoginModal = () => {
               <FormField
                 control={form.control}
                 key={`${name}-${index}`}
-                name={name as keyof User}
+                name={name as keyof z.infer<typeof formSchema>}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{label}</FormLabel>
