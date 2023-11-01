@@ -3,8 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
 import { signIn } from 'next-auth/react';
 
 import { AiFillGithub } from 'react-icons/ai';
@@ -18,20 +16,12 @@ import { Input } from "@/components/ui/input";
 
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { useLoginModal } from "@/hooks/useLoginModal";
+import { useRegisterUser } from "@/hooks/users/useRegisterUser";
 
-import { User } from '@/interfaces/User';
-
-const formSchema = z.object({
-  email: z.string().email(),
-  username: z.string().min(3, {
-    message: 'Username must be at least 3 characters long'
-  }).max(255, {
-    message: 'Username must be at most 255 characters long',
-  }),
-  password: z.string(),
-});
+import { formSchema, formStructure } from './constants';
 
 export const RegisterModal = () => {
+  const registerUser = useRegisterUser();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,14 +33,11 @@ export const RegisterModal = () => {
     },
   });
 
-  const mutation = useMutation((postData: any) => {
-    return axios.post("/api/auth/register", postData).then((response) => {
-      form.reset();
+  const onSubmit = (postData: z.infer<typeof formSchema>) => {
+    registerUser.mutate({
+      postData,
+      toggleRegisterModal,
     });
-  });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutation.mutate(values);
   };
 
   const toggleRegisterModal = () => {
@@ -58,34 +45,6 @@ export const RegisterModal = () => {
     loginModal.openModal();
   };
 
-  const formStructure = [
-    {
-      name: "username",
-      label: "Username",
-      type: "input",
-      description: "",
-      placeholder: "John Doe"
-    },
-    {
-      name: "email",
-      label: "Email",
-      type: "input",
-      description: "",
-      placeholder: "johndoe@gmail.com"
-    },
-    {
-      name: "password",
-      label: "Password",
-      type: "password",
-      description: "",
-    },
-    {
-      name: "repeatedPassword",
-      label: "Repeat password",
-      type: "password",
-      description: "",
-    },
-  ]
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
@@ -102,7 +61,7 @@ export const RegisterModal = () => {
               <FormField
                 control={form.control}
                 key={`${name}-${index}`}
-                name={name as keyof User}
+                name={name as keyof z.infer<typeof formSchema>}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{label}</FormLabel>
