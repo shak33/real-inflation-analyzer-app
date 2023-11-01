@@ -1,65 +1,86 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useCallback, useMemo } from "react";
+import * as z from "zod";
 
 import { CustomTable } from "@/components/Table";
-import { EditProductHistoryModal } from "@/components/modals/EditProductHistoryModal";
+import { AddEditProductHistoryModal } from "@/components/modals/AddEditProductHistoryModal";
+import { Button } from "@/components/ui/button";
 
 import { ProductPriceHistory } from "@prisma/client";
 
-import { useEditProductHistoryModal } from "@/hooks/useEditProductHistoryModal";
+import { useAddEditProductHistoryModal } from "@/hooks/useAddEditProductHistoryModal";
+import { useRemovePriceHistory } from "@/hooks/products/priceHistory/useRemovePriceHistory";
+import { useAddPriceHistory } from "@/hooks/products/priceHistory/useAddPriceHistory";
+
+import { formSchema } from "@/components/modals/AddEditProductHistoryModal/constants";
 
 interface PriceHistoryTableProps {
   data: ProductPriceHistory[];
+  productId: string;
 }
 
 export const PriceHistoryTable = ({
   data,
+  productId,
 } : PriceHistoryTableProps) => {
-  const queryClient = useQueryClient();
-  const editProductHistoryModal = useEditProductHistoryModal();
+  const removePriceHistory = useRemovePriceHistory();
+  const addPriceHistory = useAddPriceHistory();
+  const addEditProductHistoryModal = useAddEditProductHistoryModal();
   const tableHead = ['Price', 'Price with discount', 'Date', 'Receipt'];
-  const tableBody = data.map(({id, price, priceWithDiscount, date, receiptImage} : ProductPriceHistory) => ({
-    id,
-    price,
-    priceWithDiscount: priceWithDiscount ? 'Yes' : 'No',
-    date: new Date(date).toLocaleDateString(),
-    receiptImage,
-  }));
-  const filteredData = data.find(({ id } : ProductPriceHistory) => id === editProductHistoryModal.editedId);
 
-  const onEditClick = (rowId: string) => {
-    editProductHistoryModal.setEditedRow(rowId);
-    editProductHistoryModal.openModal();
-  }
+  const tableBody = useMemo(() => {
+    return data.map(({id, price, priceWithDiscount, date, receiptImage} : ProductPriceHistory) => ({
+      id,
+      price,
+      priceWithDiscount: priceWithDiscount ? 'Yes' : 'No',
+      date: new Date(date).toLocaleDateString(),
+      receiptImage,
+    }));
+  }, [data]);
 
-  const removeMutation = useMutation({
-    mutationFn: (id: string) => {
-      return axios.delete(`/api/admin/products/${id}/price-history/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["product"],
-      });
-    },
-  })
+  const filteredData = useMemo(() => {
+    return data.find(({ id } : ProductPriceHistory) => id === addEditProductHistoryModal.editedId);
+  }, [data, addEditProductHistoryModal.editedId]);
 
-  const onRemoveClick = (id: string) => {
-    removeMutation.mutate(id);
-  }
+  const onEditClick = useCallback((rowId: string) => {
+    addEditProductHistoryModal.setEditedRow(rowId);
+    addEditProductHistoryModal.openModal();
+  }, [addEditProductHistoryModal]);
+
+  const onRemoveClick = useCallback((id: string) => {
+    removePriceHistory.mutate(id);
+  }, [removePriceHistory]);
+
+  const onAddNewPriceHistoryClick = useCallback(() => {
+    addEditProductHistoryModal.setEditedRow('');
+    addEditProductHistoryModal.openModal();
+  }, [addEditProductHistoryModal]);
+
+  const onAddNewPriceHistorySave = useCallback((postData: z.infer<typeof formSchema>) => {
+    addPriceHistory.mutate({productId, postData});
+    addEditProductHistoryModal.closeModal();
+  }, [addPriceHistory, productId, addEditProductHistoryModal]);
 
   return (
     <>
+      <div className="flex justify-end mb-4 w-full">
+        <Button
+          onClick={onAddNewPriceHistoryClick}
+        >
+          Add new price history
+        </Button>
+      </div>
       <CustomTable
         tableHead={tableHead}
         tableBody={tableBody}
         onEditClick={onEditClick}
         onRemoveClick={onRemoveClick}
       />
-      {filteredData ? (
-        <EditProductHistoryModal
+      {addEditProductHistoryModal.isOpen ? (
+        <AddEditProductHistoryModal
           data={filteredData}
+          onSave={onAddNewPriceHistorySave}
         />
       ) : null}
     </>

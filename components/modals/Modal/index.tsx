@@ -84,25 +84,27 @@ const Modal: React.FC<ModalProps> = ({
             <div className="relative p-6 flex-auto">
               {body}
             </div>
-            <div className="flex flex-col gap-2 p-6">
-              <div className="flex flex-row items-center gap-4 w-full">
-                {secondaryAction && secondaryActionLabel ? (
-                  <Button
+            {secondaryAction || onSubmit || footer ? (
+              <div className="flex flex-col gap-2 p-6">
+                <div className="flex flex-row items-center gap-4 w-full">
+                  {secondaryAction && secondaryActionLabel ? (
+                    <Button
+                      disabled={disabled}
+                      onClick={handleSecondaryAction}
+                    >
+                      {secondaryActionLabel}
+                    </Button>
+                  ) : null}
+                  {onSubmit ? <Button
                     disabled={disabled}
-                    onClick={handleSecondaryAction}
+                    onClick={handleSubmit}
                   >
-                    {secondaryActionLabel}
-                  </Button>
-                ) : null}
-                {onSubmit ? <Button
-                  disabled={disabled}
-                  onClick={handleSubmit}
-                >
-                  {actionLabel}
-                </Button> : null}
+                    {actionLabel}
+                  </Button> : null}
+                </div>
+                {footer}
               </div>
-              {footer}
-            </div>
+            ) : null}
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ interface EditProductHistoryModalState {
   closeModal: () => void;
 }
 
-export const useEditProductHistoryModal = create<EditProductHistoryModalState>((set) => ({
+export const useAddEditProductHistoryModal = create<EditProductHistoryModalState>((set) => ({
   editedId: "",
   isOpen: false,
   openModal: () => set({ isOpen: true }),

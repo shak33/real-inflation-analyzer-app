@@ -19,8 +19,8 @@ interface CustomTableProps {
   onRemoveClick?: (id: string) => void;
   searchQuery?: string;
   onSearchInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  isLoading: boolean;
-  loadingText: string;
+  isLoading?: boolean;
+  loadingText?: string;
 }
 
 export const CustomTable = ({
