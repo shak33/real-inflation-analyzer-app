@@ -1,11 +1,13 @@
 import prisma from "@/libs/prismadb";
 
+import { parseEuropeanNumber } from "@/utils/parseEuropeanNumber";
+
 import { getCurrentUser } from "@/actions/users/getCurrentUser";
 
 interface CreatePriceHistoryParams {
   data: {
     productId: string;
-    price: number;
+    price: string;
     priceWithDiscount: boolean;
     date: Date;
     receiptImage: string;
@@ -36,7 +38,7 @@ export async function createPriceHistory({
     await prisma.productPriceHistory.create({
       data: {
         productId,
-        price,
+        price: parseEuropeanNumber(price),
         priceWithDiscount,
         date,
         receiptImage,

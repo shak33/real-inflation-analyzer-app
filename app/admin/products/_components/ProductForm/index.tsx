@@ -38,7 +38,7 @@ export const ProductForm = () => {
     defaultValues: {
       name: "",
       shortName: "",
-      price: 0,
+      price: "0",
       priceWithDiscount: false,
       barcode: "",
       date: new Date(),
