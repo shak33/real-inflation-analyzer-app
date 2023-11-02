@@ -41,23 +41,26 @@ export const Navbar:React.FC<NavbarProps> = ({
         height="50"
       />
       <ul className="flex items-center gap-8 relative">
-        <li className="hover:underline">
-          <Link href="/admin/companies">
-            Companies
-          </Link>
-        </li>
-        <li className="hover:underline">
-          <Link href="/admin/products">
-            Products
-          </Link>
-        </li>
-        {currentUser?.role === Role.ADMIN ?
-          <li className="hover:underline">
-            <Link href="/admin/users">
-              Users
-            </Link>
-          </li>
-        : null}
+        {currentUser?.role === Role.ADMIN ? (
+          <>
+
+            <li className="hover:underline">
+              <Link href="/admin/companies">
+                Companies
+              </Link>
+            </li>
+            <li className="hover:underline">
+              <Link href="/admin/products">
+                Products
+              </Link>
+            </li>
+            <li className="hover:underline">
+              <Link href="/admin/users">
+                Users
+              </Link>
+            </li>
+          </>
+        ) : null}
         {!currentUser ?
           <div className="flex gap-2">
             <li>
