@@ -7,7 +7,7 @@ interface UseProductsProps {
   searchQuery?: string;
 }
 
-export async function fetchProductById(id: string, toast: any) {
+export async function fetchProductById(toast: any, id: string) {
   const { data } = await axios.get(`/api/products/${id}`);
   
   if (data.status !== 200) {
@@ -44,7 +44,7 @@ export function useGetProducts({
 
   const data = useQuery({
     queryKey,
-    queryFn: () => (id ? fetchProductById(id, toast) : fetchAllProducts(toast, searchQuery)),
+    queryFn: () => (id ? fetchProductById(toast, id) : fetchAllProducts(toast, searchQuery)),
   });
 
   return data;

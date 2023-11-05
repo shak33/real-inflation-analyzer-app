@@ -1,9 +1,10 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import {
-  useProducts,
+  useGetProducts,
   fetchProductById,
   fetchAllProducts,
 } from "@/hooks/products/useGetProducts";
+import { useToast } from "@/hooks/utils/useToast"
 
 jest.mock("../../hooks/products/useGetProducts", () => ({
   fetchProductById: jest.fn(),
@@ -11,6 +12,8 @@ jest.mock("../../hooks/products/useGetProducts", () => ({
 }));
 
 describe("useProducts", () => {
+  const { toast } = useToast();
+
   it("should fetch all products if no id is provided", async () => {
     const mockedResponse = {
       data: [
@@ -21,7 +24,7 @@ describe("useProducts", () => {
 
     (fetchAllProducts as jest.Mock).mockResolvedValueOnce(mockedResponse);
 
-    const response = await fetchAllProducts();
+    const response = await fetchAllProducts(toast);
 
     expect(response).toEqual(mockedResponse);
   });
@@ -33,7 +36,7 @@ describe("useProducts", () => {
 
     (fetchProductById as jest.Mock).mockResolvedValueOnce(mockedResult);
 
-    const response = await fetchProductById("1");
+    const response = await fetchProductById(toast, "1");
 
     expect(response).toEqual(mockedResult);
   });
