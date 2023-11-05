@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import axios from 'axios';
-import { useUsers } from '@/hooks/useUsers';
+import { useGetUsers } from '@/hooks/users/useGetUsers';
 
 jest.mock('axios');
 
@@ -11,7 +11,7 @@ describe('useUsers', () => {
     const data = [{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }];
     (axios.get as jest.Mock).mockResolvedValueOnce({ data: { data } });
 
-    const { result } = renderHook(() => useUsers(), { wrapper });
+    const { result } = renderHook(() => useGetUsers(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -24,7 +24,7 @@ describe('useUsers', () => {
     const error = new Error('Failed to fetch users');
     (axios.get as jest.Mock).mockRejectedValueOnce(() => Promise.reject(error));
 
-    const { result } = renderHook(() => useUsers(), { wrapper });
+    const { result } = renderHook(() => useGetUsers(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);

@@ -18,19 +18,15 @@ describe('createCompany action', () => {
       message,
       status,
     } = await createCompany({
-      data: {
-        name: "Company",
-        logo: "logo.png",
-      }
+      name: "Company",
+      logo: "logo.png",
     });
 
     expect(status).toBe(200);
     expect(message).toBe("Company created successfully");
     expect(prisma.company.create).toBeCalledWith({
-      data: {
-        name: "Company",
-        logo: "logo.png",
-      },
+      name: "Company",
+      logo: "logo.png",
     });
   });
 
@@ -39,10 +35,8 @@ describe('createCompany action', () => {
       message,
       status,
     } = await createCompany({
-      data: {
-        name: "",
-        logo: "logo.png",
-      }
+      name: "",
+      logo: "logo.png",
     });
 
     expect(status).toBe(403);
@@ -57,10 +51,8 @@ describe('createCompany action', () => {
       message,
       status,
     } = await createCompany({
-      data: {
-        name: "Company",
-        logo: "logo.png",
-      }
+      name: "Company",
+      logo: "logo.png",
     });
 
     expect(status).toBe(500);
