@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const formSchema = z.object({
-  price: z.number().min(0, {
+  price: z.string().min(0, {
     message: "Price must be at least 0",
   }),
   priceWithDiscount: z.boolean(),
@@ -13,7 +13,7 @@ export const formStructure = [
   {
     name: "price",
     label: 'Price',
-    type: "number",
+    type: "input",
     description: "",
   },
   {

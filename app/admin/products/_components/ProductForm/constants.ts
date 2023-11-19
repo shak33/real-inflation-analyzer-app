@@ -10,7 +10,7 @@ export const formSchema = z.object({
       message: "Name must be at most 255 characters long",
     }),
   name: z.string(),
-  price: z.number().min(0, {
+  price: z.string().min(0, {
     message: "Price must be at least 0",
   }),
   priceWithDiscount: z.boolean(),
@@ -50,7 +50,7 @@ export const formStructureLeft = [
   {
     name: "price",
     label: "Price",
-    type: "number",
+    type: "input",
     description: "",
   },
   {
